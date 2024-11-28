@@ -1,0 +1,8 @@
+<div class="ctn p-5 text-2xl font-bold">
+    <h1 class="text-center">{{this.title}}</h1>
+    <div class="flex flex-wrap gap-3 mt-5  justify-center">
+        @for(product of this.products; track product){
+            <app-product-tile class="mb-5 cursor-pointer" [title]="product.name" [price]="product.price" [image]="product.image"></app-product-tile>
+        }   
+    </div>
+</div>

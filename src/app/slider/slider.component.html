@@ -1,0 +1,29 @@
+
+
+<div class="absolute w-full h-[35vh] sm:h-[60vh] flex justify-end items-center pr-5">
+    <ul>
+        @for(item of this.sliderImages; track item; let idx = $index){
+            <li>
+                <div
+                (click)="selectDot(idx)"
+                [ngClass]="
+                {
+                    'circle': true, 
+                    'border-solid': true,
+                    'border-2': true,
+                    'border-slate-700': this.sliderSelectedDot == idx,
+                    'bg-slate-700': this.sliderSelectedDot != idx, 
+                    'bg-slate-200': this.sliderSelectedDot == idx,
+                }" ></div>
+            </li>
+        }
+    </ul>
+</div>
+<div id="image-ctn w-full h-[35vh] ">
+    <img class="w-full object-cover h-[35vh] sm:h-[60vh]" src="assets/slider/{{this.sliderSelectedDot + 1}}.webp">
+</div>
+<div class="text-content mt-4 ml-5 mb-9 font-body">
+    <h1 class="text-lg font-bold text-slate-700">{{this.currentTitle}}</h1>
+    <p class="text-base text-slate-700">{{this.currentDescription}}</p>    
+</div>
+
