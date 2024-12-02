@@ -2,11 +2,10 @@ import { Component, Input } from '@angular/core';
 import { ProductTileComponent } from '../product-tile/product-tile.component';
 
 @Component({
-  selector: 'app-product-list',
-  standalone: true,
-  imports: [ProductTileComponent],
-  templateUrl: './product-list.component.html',
-  styleUrl: './product-list.component.scss'
+    selector: 'app-product-list',
+    imports: [ProductTileComponent],
+    templateUrl: './product-list.component.html',
+    styleUrl: './product-list.component.scss'
 })
 
 export class ProductListComponent {

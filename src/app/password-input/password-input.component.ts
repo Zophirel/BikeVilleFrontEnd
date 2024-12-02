@@ -9,18 +9,17 @@ import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/f
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-password-input',
-  templateUrl: './password-input.component.html',
-  styleUrls: ['./password-input.component.scss'],
-  standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PasswordInputComponent),
-      multi: true,
-    },
-  ],
+    selector: 'app-password-input',
+    templateUrl: './password-input.component.html',
+    styleUrls: ['./password-input.component.scss'],
+    imports: [RouterModule, CommonModule, FormsModule],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => PasswordInputComponent),
+            multi: true,
+        },
+    ]
 })
 
 export class PasswordInputComponent implements ControlValueAccessor, OnInit {

@@ -1,28 +1,16 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
-
-import { Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-
-
-export interface OrderDialog {
-  animal: string;
-  name: string;
-}
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'order-dialog',
   templateUrl: 'order-dialog.component.html',
   standalone: true,
-  imports: [
-    MatButtonModule
-  ]
+  imports: [MatDialogModule, MatButtonModule, CommonModule]
+
 })
 export class OrderDialog {
-  
   @Input() orderCategory: string[] = ["Category 1", "Category 2", "Category 3"];
   readonly dialogRef = inject(MatDialogRef<OrderDialog>);
   readonly data = inject<OrderDialog>(MAT_DIALOG_DATA);

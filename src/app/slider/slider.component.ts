@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-slider',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './slider.component.html',
-  styleUrl: './slider.component.scss'
+    selector: 'app-slider',
+    standalone: true,
+    imports: [CommonModule],
+    templateUrl: './slider.component.html',
+    styleUrl: './slider.component.scss'
 })
 export class SliderComponent implements OnInit {
   sliderImages : any = [

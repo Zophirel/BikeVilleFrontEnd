@@ -2,11 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-chip-list',
-  templateUrl: './chip-list.component.html',
-  styleUrls: ['./chip-list.component.scss'], 
-  imports: [CommonModule],
-  standalone: true
+    selector: 'app-chip-list',
+    templateUrl: './chip-list.component.html',
+    styleUrls: ['./chip-list.component.scss'],
+    imports: [CommonModule]
 })
 export class ChipListComponent implements OnInit {
   @Input() chipNames: string[] = []; // Input list of chip names

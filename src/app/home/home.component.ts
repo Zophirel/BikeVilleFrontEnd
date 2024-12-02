@@ -4,11 +4,10 @@ import { SliderComponent } from '../slider/slider.component';
 import { ProductListComponent } from "../product-list/product-list.component";
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [NavbarComponent, SliderComponent, ProductListComponent],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+    selector: 'app-home',
+    imports: [NavbarComponent, SliderComponent, ProductListComponent],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.scss'
 })
 
 

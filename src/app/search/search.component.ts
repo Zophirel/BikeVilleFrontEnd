@@ -7,18 +7,17 @@ import { OrderComponent } from "../order/order.component";
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-search',
-  standalone: true,
-  imports: [
-    NavbarComponent,
-    MatTabsModule,
-    ProductListComponent,
-    FilterComponent,
-    OrderComponent,
-    MatButtonModule
-],
-  templateUrl: './search.component.html',
-  styleUrl: './search.component.scss'
+    selector: 'app-search',
+    imports: [
+        NavbarComponent,
+        MatTabsModule,
+        ProductListComponent,
+        FilterComponent,
+        OrderComponent,
+        MatButtonModule
+    ],
+    templateUrl: './search.component.html',
+    styleUrl: './search.component.scss'
 })
 
 @Injectable({providedIn: 'root'})

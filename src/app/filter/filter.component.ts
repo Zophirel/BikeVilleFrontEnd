@@ -4,11 +4,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { ChipListComponent } from '../chip-list/chip-list.component';
 
 @Component({
-  selector: 'app-filter',
-  standalone: true,
-  imports: [MatChipsModule, CommonModule, ChipListComponent],
-  templateUrl: './filter.component.html',
-  styleUrl: './filter.component.scss'
+    selector: 'app-filter',
+    imports: [MatChipsModule, CommonModule, ChipListComponent],
+    templateUrl: './filter.component.html',
+    styleUrl: './filter.component.scss'
 })
 export class FilterComponent {
   isSelected: boolean = false;

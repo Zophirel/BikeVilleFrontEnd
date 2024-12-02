@@ -7,11 +7,10 @@ import { AuthService } from '../../services/auth-service.service';
 
 
 @Component({
-  selector: 'app-signup',
-  standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, PasswordInputComponent],
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss'
+    selector: 'app-signup',
+    imports: [RouterModule, CommonModule, FormsModule, PasswordInputComponent],
+    templateUrl: './signup.component.html',
+    styleUrl: './signup.component.scss'
 })
 
 export class SignupComponent {

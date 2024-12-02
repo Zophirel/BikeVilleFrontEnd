@@ -10,11 +10,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { OrderDialog } from '../order-dialog/order-dialog.component';
 
 @Component({
-  selector: 'app-order',
-  standalone: true,
-  imports: [CommonModule, MatChipsModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
-  templateUrl: './order.component.html',
-  styleUrl: './order.component.scss'
+    selector: 'app-order',
+    imports: [CommonModule, MatChipsModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
+    templateUrl: './order.component.html',
+    styleUrl: './order.component.scss'
 })
 export class OrderComponent {
   readonly dialog = inject(MatDialog);
