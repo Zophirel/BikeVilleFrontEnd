@@ -1,0 +1,37 @@
+<app-navbar [isSearchPage]="true" [isStackedPage]="true" class="w-full"></app-navbar>
+<div class="pl-6 pr-6 mt-3">
+    <input placeholder="Search" type="text" class="w-full h-14 rounded-full pl-6 pr-6 bg-[#ECE6F0]">
+    <img src="assets/Search.svg" class=" rounded-full pl-6 pr-6 float-right bottom-10 relative">
+</div>
+<mat-tab-group class="mt-3 w-full h-full pl-5 pr-5">
+    
+    <mat-tab label="Bikes">
+        <div class="flex flex-row justify-end mt-3 gap-2">
+            <app-filter></app-filter>
+            <app-order></app-order>
+        </div>
+ 
+        <app-product-list class="mt-5"></app-product-list>
+    </mat-tab>
+    <mat-tab label="Compnents" class="h-full">
+        <div>
+            <app-filter></app-filter>
+            <app-order></app-order>         
+        </div>
+        <app-product-list class="mt-5"></app-product-list>
+    </mat-tab>
+    <mat-tab label="Clothing">
+        <div>
+            <app-filter></app-filter>
+            <app-order></app-order>         
+        </div>
+        <app-product-list class="mt-5"></app-product-list>
+    </mat-tab>
+    <mat-tab label="Accesories">
+        <div>
+            <app-filter></app-filter>
+            <app-order></app-order>         
+        </div>>
+        <app-product-list class="mt-5"></app-product-list>
+    </mat-tab>
+</mat-tab-group>

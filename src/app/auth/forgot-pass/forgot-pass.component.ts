@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './forgot-pass.component.html',
-  styleUrl: './forgot-pass.component.css'
+  styleUrl: './forgot-pass.component.scss'
 })
 export class ForgotPassComponent {
   email: string = '';

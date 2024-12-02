@@ -8,7 +8,7 @@ import { ProductListComponent } from "../product-list/product-list.component";
   standalone: true,
   imports: [NavbarComponent, SliderComponent, ProductListComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.scss'
 })
 
 

@@ -7,7 +7,7 @@ import { Title } from '@angular/platform-browser';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './slider.component.html',
-  styleUrl: './slider.component.css'
+  styleUrl: './slider.component.scss'
 })
 export class SliderComponent implements OnInit {
   sliderImages : any = [

@@ -6,7 +6,7 @@ import { ProductTileComponent } from '../product-tile/product-tile.component';
   standalone: true,
   imports: [ProductTileComponent],
   templateUrl: './product-list.component.html',
-  styleUrl: './product-list.component.css'
+  styleUrl: './product-list.component.scss'
 })
 
 export class ProductListComponent {

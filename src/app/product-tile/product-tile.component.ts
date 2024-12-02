@@ -5,7 +5,7 @@ import { Component, input, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './product-tile.component.html',
-  styleUrl: './product-tile.component.css'
+  styleUrl: './product-tile.component.scss'
 })
 
 export class ProductTileComponent {

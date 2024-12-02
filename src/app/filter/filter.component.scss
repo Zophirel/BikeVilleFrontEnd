@@ -1,0 +1,12 @@
+::ng-deep .mdc-evolution-chip-set__chips {
+    justify-content: end; /* Align chips to the right */
+}
+.selected-chip {
+    background-color: lightblue;
+    color: white;
+  }
+
+::ng-deep .mat-mdc-chip-trailing-icon {
+    display: none; /* Hides the default icon */
+}
+  

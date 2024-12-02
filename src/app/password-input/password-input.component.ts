@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-password-input',
   templateUrl: './password-input.component.html',
-  styleUrls: ['./password-input.component.css'],
+  styleUrls: ['./password-input.component.scss'],
   standalone: true,
   imports: [RouterModule, CommonModule, FormsModule],
   providers: [

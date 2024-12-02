@@ -1,17 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
+:root {
+    @include mat.button-overrides((
+      filled-container-color: orange,
+      filled-label-text-color: red,
+    ));
+  }
+  
+  
 
 @layer base {
     html {
         font-family: "Work Sans", sans-serif !important;
+        height: 100%;   
     }
 }
-
 
 body{
     height: 100%;
@@ -19,10 +27,10 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: aliceblue;
+    background-color: #fff;
 }
 
-app-root, app-home, main {
+app-root, app-home, app-search, main {
     height: 100%;
     width: 100%;
 }
