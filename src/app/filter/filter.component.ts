@@ -5,7 +5,7 @@ import { ChipListComponent } from '../chip-list/chip-list.component';
 
 @Component({
     selector: 'app-filter',
-    imports: [MatChipsModule, CommonModule, ChipListComponent],
+    imports: [MatChipsModule, CommonModule],
     templateUrl: './filter.component.html',
     styleUrl: './filter.component.scss'
 })
