@@ -1,4 +1,5 @@
 import { Component, input, Input } from '@angular/core';
+import { Product } from '../product/product.module';
 
 @Component({
     selector: 'app-product-tile',
@@ -8,7 +9,10 @@ import { Component, input, Input } from '@angular/core';
 })
 
 export class ProductTileComponent {
-  @Input() image : string = "";
-  @Input() title : string = "";
-  @Input() price : number = 0;
+  @Input() product: Product | undefined;
+
+
+  getRandomImage(): string {
+    return "assets/slider/" + Math.floor(Math.random() * 3) + ".webp";
+  }
 }

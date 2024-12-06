@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PasswordInputComponent } from '../../password-input/password-input.component';
-import { AuthService } from '../../services/auth-service.service';
+import { AuthService } from '../../services/auth/auth-service.service';
 
 
 @Component({

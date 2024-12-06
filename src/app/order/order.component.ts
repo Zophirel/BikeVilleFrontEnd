@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { ChipListComponent } from "../chip-list/chip-list.component";
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +25,7 @@ export class OrderComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       if (result !== undefined) {
-        this.orderData.set(result);
+        this.orderData = result;
       }
     });
   }

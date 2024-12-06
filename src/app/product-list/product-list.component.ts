@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProductTileComponent } from '../product-tile/product-tile.component';
+import { Product } from '../product/product.module';
 
 @Component({
     selector: 'app-product-list',
@@ -8,13 +9,19 @@ import { ProductTileComponent } from '../product-tile/product-tile.component';
     styleUrl: './product-list.component.scss'
 })
 
-export class ProductListComponent {
-  @Input() title: string = '';
-  products: any = [
-    {name: 'Product 1', price: 100, image: 'assets/slider/1.webp'},
-    {name: 'Product 2', price: 200, image: 'assets/slider/2.webp'},
-    {name: 'Product 3', price: 300, image: 'assets/slider/3.webp'},
-  ];
+export class ProductListComponent implements OnInit {
 
+  @Input() productsData: Map<string, Product[]>  = new Map<string, Product[]>();
+  @Input() title : string | undefined;
+  
+  products : Product[] = []; 
 
+  ngOnInit(): void {
+    let productNames = this.productsData?.keys();
+  
+    for(let p of this.productsData){
+      this.products.push(p[1][0]);
+    }
+  }
+  
 }

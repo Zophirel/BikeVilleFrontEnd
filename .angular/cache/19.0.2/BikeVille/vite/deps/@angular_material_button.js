@@ -6,8 +6,8 @@ import {
   Platform,
   _CdkPrivateStyleLoader,
   _StructuralStylesLoader
-} from "./chunk-OLSCCSDW.js";
-import "./chunk-G7VLP5UY.js";
+} from "./chunk-V54THV2L.js";
+import "./chunk-NIC6FLW6.js";
 import {
   ANIMATION_MODULE_TYPE,
   ChangeDetectionStrategy,
@@ -19,8 +19,6 @@ import {
   NgModule,
   NgZone,
   ViewEncapsulation,
-  __spreadProps,
-  __spreadValues,
   booleanAttribute,
   inject,
   numberAttribute,
@@ -40,7 +38,11 @@ import {
   ɵɵgetInheritedFactory,
   ɵɵprojection,
   ɵɵprojectionDef
-} from "./chunk-2OLNPDST.js";
+} from "./chunk-WCEUNNVR.js";
+import {
+  __spreadProps,
+  __spreadValues
+} from "./chunk-5TID76VL.js";
 
 // node_modules/@angular/material/fesm2022/button.mjs
 var _c0 = ["mat-button", ""];

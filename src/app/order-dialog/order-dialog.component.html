@@ -1,4 +1,29 @@
-<div class="p-5">
-    <button mat-raised-button color="primary">Basic</button>
+<div class="p-5"> 
+    <mat-label class="text-2xl">Order By</mat-label>
+    <form #orderForm="ngForm" (ngSubmit)="order()">
+        <div class="flex flex-row gap-2 mt-5">
+            <mat-form-field>
+                <mat-label>Select Category</mat-label>
+                <mat-select [(ngModel)]="orderCategorySelectedIdx" name="order">
+                    @for (order of orderCategory; track order; let idx = $index) {
+                        <mat-option [value]="idx">{{ order }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <div class="w-20">
+                @if(orderDirection){
+                    <button type="button" mat-button class="relative top-[0.5rem]" (click)="swapOrder()">
+                        <mat-icon>arrow_downward</mat-icon>
+                        <mat-label>DESC</mat-label>
+                    </button>
+                }@else {
+                    <button type="button" mat-button class="relative top-[0.5rem]" (click)="swapOrder()">
+                        <mat-icon>arrow_upward</mat-icon>
+                        <mat-label>ASC</mat-label>
+                    </button>
+                }
+            </div>
+        </div>
+        <button type="submit" mat-flat-button class="float-right">Confirm</button>
+    </form>
 </div>
-  

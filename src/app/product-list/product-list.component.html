@@ -1,13 +1,8 @@
 <div class="ctn  text-2xl font-bold ">
     <h1 class="text-center">{{this.title}}</h1>
-    <div class="flex flex-wrap justify-center gap-2">
+    <div class="flex flex-wrap justify-center gap-2 mt-5">
         @for(product of this.products; track product){
-            @if(product == this.products[this.products.length-1]){
-                <app-product-tile class="mt-5 cursor-pointer" [title]="product.name" [price]="product.price" [image]="product.image"></app-product-tile>
-            } @else {
-                <app-product-tile class="mt-5 cursor-pointer" [title]="product.name" [price]="product.price" [image]="product.image"></app-product-tile>
-            }
-           
+            <app-product-tile [product]="product"></app-product-tile>
         }   
     </div>
 </div>
