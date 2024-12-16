@@ -1,57 +1,27 @@
-<div class="p-10 bg-slate-800 rounded-lg">
-    <h1 class=" text-4xl text-slate-50">Accedi</h1>
-    <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" class="flex flex-col ">
-      <div class="w-full max-w-sm min-w-[200px] mt-7">
-          <div class="relative">
-            <input 
-              [(ngModel)] = "email" 
-              required
-              email
-              type="email"
-              name="email"
-              class="peer w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-sl rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-            />
-            <label
-            [ngClass]="{
-              '-top-2': email,        
-              'text-xs': email,
-              'text-slate-50': email,
-              'scale-90': email,
-              'top-2': !email
-            }"
-            class="absolute cursor-text bg-slate-800 px-1 left-2.5 text-slate-400 text-sm transition-all transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90">
-              Email
-            </label>
-          </div>
+
+<app-navbar class="w-full"></app-navbar>
+
+<div class="relative top-[6.5rem]">
+  <h1 class="text-center  font-semibold text-3xl text-slate-950 self-start my-2">Welcome back!</h1>
+  <p class="text-center text-sm opacity-50 mb-8">Please enter your details </p>
+  <div class="w-full flex flex-col justify-center items-center" >
+    <form class="w-[280px] flex flex-col justify-center ">
+      <mat-form-field class="example-full-width">
+        <mat-label>Email</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Password</mat-label>
+        <input type="password" matInput>
+      </mat-form-field>
+      <a mat-button routerLink="/forgot-password" class="opacity-50 text-sm text-end transition-opacity hover:opacity-100">Forgot password?</a>
+      <button mat-raised-button class="submit">Accedi</button>
+      <button mat-stroked-button class="submit">
+        <div class="flex flex-row gap-2 ">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" />
+          <h1 class="">Log in with Google</h1>
         </div>
-      
-        <div class="w-full max-w-sm min-w-[200px] mt-7">
-          <div class="relative">
-            <input 
-              [(ngModel)] = "password" 
-              required
-              type="password"
-              name="password"
-              class="peer w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-sl rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-            />
-            <label
-            [ngClass]="{
-              '-top-2': password,        
-              'text-xs': password,
-              'text-slate-50': password,
-              'scale-90': password,
-              'top-2': !password
-            }"
-            class="absolute cursor-text bg-slate-800 px-1 left-2.5 text-slate-400 text-sm transition-all transform origin-left peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-slate-400 peer-focus:scale-90">
-              Password
-            </label>
-          </div>
-        </div>
-        <a  routerLink="/forgot-password" class="mt-2 text-sm text-end text-slate-600 transition-colors hover:text-slate-300">Hai dimenticato la password?</a>
-      <button 
-          
-        type="submit"
-        class="mt-7 mb-5 rounded-md bg-slate-300 py-2 px-4 border border-transparent text-center text-sm text-slate-800 transition-all shadow-md hover:shadow-lg focus:bg-slate-50 focus:shadow-none active:bg-slate-700 hover:bg-slate-50 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">Accedi</button>
-        <a routerLink="/signup" class="text-sm text-center text-slate-600 transition-colors hover:text-slate-300 ">Non hai ancora un account? Registrati</a>
+      </button>
     </form>
+  </div>
 </div>

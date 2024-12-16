@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
+import {EmittedFilterValue} from './emitted-filter.module.';
 
 @Component({
   selector: 'app-filter-dialog',
@@ -29,14 +30,11 @@ import { MatChipsModule } from '@angular/material/chips';
 export class FilterDialog {
   readonly dialogRef = inject(MatDialogRef<FilterDialog>);
   readonly data = inject<FilterDialog>(MAT_DIALOG_DATA);
-  subCategories: Array<Array<any>> = (this.data as unknown as Array<Array<any>>);
+  subCategories: EmittedFilterValue[] = (this.data as unknown as EmittedFilterValue[]) ;
 
   constructor() {
     console.log("FilterDialog constructor");
     console.log(this.subCategories);
-  }
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 
   filter(): void {
@@ -45,6 +43,6 @@ export class FilterDialog {
   }
 
   addSubCategory(subCategory: number): void {
-    this.subCategories[subCategory][1] = !this.subCategories[subCategory][1];
+    this.subCategories[subCategory].selected = !this.subCategories[subCategory].selected;
   }
 }

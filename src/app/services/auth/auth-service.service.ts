@@ -15,15 +15,19 @@ export class AuthService {
   }
 
   login(email: string, password: string) : Observable<any> {
+
     let body = { 
       email: email,
       password: password
     }
  
     const headers = { 'content-type': 'application/json' }    
+   
     return this.client.post('https://localhost:5078/api/auth/login', body, {
       responseType: 'text', headers: headers, observe: 'response'
     });
+
+    
   }
 
   checkAuth() : Observable<any> {

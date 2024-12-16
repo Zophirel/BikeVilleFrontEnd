@@ -1,0 +1,76 @@
+
+{
+  "activities": [
+    {
+      "id": 1,
+      "task": "Fare la spesa",
+      "category": "Personale",
+      "status": "In sospeso",
+      "priority": "Alta"
+    },
+    {
+      "id": 2,
+      "task": "Completare la relazione sul progetto",
+      "category": "Lavoro",
+      "status": "In sospeso",
+      "priority": "Alta"
+    },
+    {
+      "id": 3,
+      "task": "Pulire la casa",
+      "category": "Domestico",
+      "status": "In sospeso",
+      "priority": "Media"
+    },
+    {
+      "id": 4,
+      "task": "Rispondere alle email",
+      "category": "Lavoro",
+      "status": "Completato",
+      "priority": "Bassa"
+    },
+    {
+      "id": 5,
+      "task": "Andare in palestra",
+      "category": "Fitness",
+      "status": "In sospeso",
+      "priority": "Alta"
+    },
+    {
+      "id": 6,
+      "task": "Leggere un capitolo del libro",
+      "category": "Personale",
+      "status": "In sospeso",
+      "priority": "Media"
+    },
+    {
+      "id": 7,
+      "task": "Innaffiare le piante",
+      "category": "Domestico",
+      "status": "Completato",
+      "priority": "Bassa"
+    },
+    {
+      "id": 8,
+      "task": "Preparare una presentazione per la riunione",
+      "category": "Lavoro",
+      "status": "In sospeso",
+      "priority": "Alta"
+    },
+    {
+      "id": 9,
+      "task": "Fare una passeggiata nel parco",
+      "category": "Personale",
+      "status": "Completato",
+      "priority": "Bassa"
+    },
+    {
+      "id": 10,
+      "task": "Studiare per l'esame di matematica",
+      "category": "Studio",
+      "status": "In sospeso",
+      "priority": "Alta"
+    }
+  ]
+}
+

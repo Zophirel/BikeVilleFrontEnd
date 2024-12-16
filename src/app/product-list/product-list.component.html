@@ -1,9 +1,22 @@
-<div class="ctn  text-2xl font-bold ">
-    <h1 class="text-center">{{this.title}}</h1>
+<div class="ctn  text-2xl font-bold mb-10">
+    <h1 class="text-center mt-10">{{this.title}}</h1>
+   @if(this.homeProducts){  
     <div class="flex flex-wrap justify-center gap-2 mt-5">
-        @for(product of this.products; track product){
-            <app-product-tile [product]="product"></app-product-tile>
-        }   
+        <app-product-tile [product]="this.homeProducts[0]"></app-product-tile>
+        <app-product-tile [product]="this.homeProducts[1]"></app-product-tile>
+        <app-product-tile [product]="this.homeProducts[2]"></app-product-tile>
+        <app-product-tile [product]="this.homeProducts[3]"></app-product-tile>
     </div>
+   } @else {
+        @if(this.products.length === 0){
+            <h2 class="text-center mt-5">No products found</h2>
+        }@else {
+            <div class="flex flex-wrap justify-center gap-2 mt-5">
+                @for(product of this.products; track product){
+                    <app-product-tile [product]="product"></app-product-tile>
+                }
+            </div>
+        }
+   }
 </div>
 

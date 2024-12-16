@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { signal, Signal } from '@angular/core';
 import { Product } from '../../product/product.module';
 import { ProductCategory } from '../../product/product-category.module';
 
@@ -10,7 +11,8 @@ import { ProductCategory } from '../../product/product-category.module';
 export class ProductService {
   products: Product[] = [];
   categories: ProductCategory[] = [];
-
+  currentSignal: Signal<Map<ProductCategory, Map<string, Product[]>>> | undefined;
+  
   constructor(private http: HttpClient) { }
   
   getAllProducts() {
@@ -37,28 +39,26 @@ export class ProductService {
    
     const productsMap = new Map<ProductCategory, Map<string, Product[]>>();
     const tempMap = new Map<number, ProductCategory>();
-    
-    for (const category of categories.keys()) {
-      tempMap.set(category.productCategoryId!, category);
-    }
+   
+    const tempArr = Array.from(categories.keys());
+    this.categories = tempArr;
   
+    for (const category of tempArr) {
+      tempMap.set(category.productCategoryId!, category);
+      productsMap.set(category, new Map());
+    }
+
     for (const [productName, productArray] of products) {
       const parentCategoryId = productArray[0].parentProductCategoryId;
       const category = tempMap.get(parentCategoryId!);
-  
+
       if (category) {
-        if (productsMap.has(category)) {
-          productsMap.get(category)?.set(productName, productArray);
-       
-        } else{
-          productsMap.set(category, new Map([[productName, productArray]]));
-        }
+        productsMap.get(category)?.set(productName, productArray);
       }
     }
   
     return productsMap;
   }
-  
 
   organizeCategories(data: ProductCategory[]): Map<ProductCategory, ProductCategory[]> {
     const allCategories = new Map<ProductCategory, ProductCategory[]>();

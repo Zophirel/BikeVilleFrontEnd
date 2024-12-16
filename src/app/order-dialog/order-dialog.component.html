@@ -4,7 +4,7 @@
         <div class="flex flex-row gap-2 mt-5">
             <mat-form-field>
                 <mat-label>Select Category</mat-label>
-                <mat-select [(ngModel)]="orderCategorySelectedIdx" name="order">
+                <mat-select [(value)]="this.emittedValue.orderBy" [(ngModel)]="orderCategorySelectedIdx" name="order" required>
                     @for (order of orderCategory; track order; let idx = $index) {
                         <mat-option [value]="idx">{{ order }}</mat-option>
                     }

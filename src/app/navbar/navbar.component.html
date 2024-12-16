@@ -1,15 +1,18 @@
 <nav class="flex flex-row h-16 bg-white w-full justify-between items-center pl-3 pr-3">
+   
     @if(this.isStackedPage){
-        <a routerLink="/home"><img class="cursor-pointer" src="assets/Back.svg"/></a>
+        <a routerLink="/home"><img class="cursor-pointer" src="assets/navbar/Back.svg"/></a>
     }
     
-    <img class="h-[36px] cursor-pointer" src="assets/full-logo.svg">
+    <a routerLink="/home">
+         <img class="h-[36px] cursor-pointer" src="assets/navbar/full-logo.svg">
+    </a>
 
     <div class="flex flex-row gap-3">
-        <a routerLink="/account"><img class="cursor-pointer" src="assets/User.svg"/></a>
+        <a routerLink="/account"><img class="cursor-pointer" src="assets/navbar/User.svg"/></a>
         @if(!this.isSearchPage){
-            <a routerLink="/about"><img class="cursor-pointer" src="assets/Search.svg"/></a>
+            <a routerLink="/search"><img class="cursor-pointer" src="assets/navbar/Search.svg"/></a>
         }  
-        <a routerLink="/contact"><img class="cursor-pointer"src="assets/Bag.svg"></a>
+        <a routerLink="/cart"><img class="cursor-pointer"src="assets/navbar/Bag.svg"></a>
     </div>
 </nav>

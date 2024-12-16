@@ -11,6 +11,10 @@ import { Product } from '../product/product.module';
 export class ProductTileComponent {
   @Input() product: Product | undefined;
 
+  constructor(){
+    console.log("Product Tile Component");
+    console.log(this.product);
+  }
 
   getRandomImage(): string {
     return "assets/slider/" + Math.floor(Math.random() * 3) + ".webp";

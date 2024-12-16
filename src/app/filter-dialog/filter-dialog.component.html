@@ -3,7 +3,7 @@
     <div class="my-5 overflow-y-scroll p-2 h-96">
         <mat-chip-listbox multiple class="mat-mdc-chip-set-stacked">
             @for(category of subCategories; track category;) {
-                <mat-chip-option [selected]="category[1]" (click)="addSubCategory($index)">{{ category[0] }}</mat-chip-option>
+                <mat-chip-option [selected]="category.selected" (click)="addSubCategory($index)">{{ category.name}}</mat-chip-option>
             }
         </mat-chip-listbox>
     </div>

@@ -1,0 +1,73 @@
+<div class="bg-white w-full h-screen flex flex-col absolute inset-0">
+    <app-navbar></app-navbar>
+    <div class="checkout flex flex-col justify-center items-center mt-4">
+        <h1 class="text-5xl font-bold">Checkout</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-11 mt-8 w-11/12">
+            <!-- Contenitore 1 -->
+            <div class="border border-gray-300 rounded-[40px] p-6 shadow-sm">
+                <div class="flex flex-col items-start space-y-4">
+                    <p class="text-4xl font-semibold text-black-700">Shipping</p>
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center space-x-4">
+                            <img src="assets/checkout/van-icon.svg" alt="Shipping Icon" class="w-16 h-16 object-contain">
+                            <span class="text-2xl text-gray-600">Your shipping address</span>
+                        </div>
+                        <!-- Bottone con icona "edit-pen" -->
+                        <button>
+                            <img src="assets/checkout/edit-pen.svg" alt="Edit Address" class="w-11 h-11 object-contain">
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Contenitore 2 -->
+            <div class="border border-gray-300 rounded-[40px] p-6 shadow-sm">
+                <div class="flex flex-col items-start space-y-4">
+                    <p class="text-4xl font-semibold text-black-700">Payment</p>
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center space-x-4">
+                            <img src="assets/checkout/cards-icon.svg" alt="Payment Icon" class="w-16 h-16 object-contain">
+                            <span class="text-2xl text-gray-600">Your payment info</span>
+                        </div>
+                        <!-- Bottone con icona "edit-pen" -->
+                        <button>
+                            <img src="assets/checkout/edit-pen.svg" alt="Edit Payment" class="w-11 h-11 object-contain">
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Contenitore 3 -->
+            <div class="border border-gray-300 rounded-[40px] p-6 shadow-sm">
+                <div class="flex justify-between items-center mb-5">
+                    <p class="text-4xl font-semibold text-black-700">Summary</p>
+                </div>
+                <div class="flex justify-between items-center mb-5">
+                    <p class="text-3xl font-semibold text-black-700">SubTotal</p>
+                    <p class="text-2xl font-semibold text-gray-500 mb-0">{{ total }}</p>
+                </div>
+                <div class="flex justify-between items-center mb-5">
+                    <p class="text-3xl font-semibold text-black-700">Shipping</p>
+                    <p class="text-2xl font-semibold text-gray-500 mb-0">$2.00</p>
+                </div>
+                <div class="flex justify-between items-center mb-5">
+                    <p class="text-3xl font-semibold text-black-700">Tax</p>
+                    <p class="text-2xl font-semibold text-gray-500 mb-0">$0.00</p>
+                </div>
+                <div class="flex justify-between items-center mb-5">
+                    <p class="text-2xl font-semibold text-gray-500 mb-0">{{ quantity }} Item</p>
+                    <div class="flex-1 flex justify-center">
+                        <p class="text-3xl font-semibold text-gray-500 mb-0 ml-auto">Total</p>
+                    </div>
+                    <p class="text-3xl font-semibold text-black-700 ml-5">{{ total + 2 | currency }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- Bottone Submit -->
+        <div class="flex justify-center mt-8 md:absolute md:inset-x-0 md:bottom-0 md:flex-row-reverse">
+            <button
+                class="bg-black text-white px-6 py-3 text-lg font-semibold rounded-full flex items-center justify-center gap-2 shadow-lg 
+                w-full md:w-full lg:w-auto lg:px-12">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>

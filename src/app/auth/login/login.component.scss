@@ -1,3 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@use '@angular/material' as mat;
+
+.submit {
+  margin-top: 20px;
+  border-radius: 100px;
+  padding: 24px;
+}

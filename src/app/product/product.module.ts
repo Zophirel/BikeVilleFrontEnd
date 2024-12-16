@@ -9,13 +9,15 @@ export class Product {
   size: string;
   weight: number;
   productModelId: number;
-  sellStartDate: Date | null; 
+  sellStartDate: string | null; 
   sellEndDate: string | null;
   thumbNailPhoto: string;
   thumbnailPhotoFileName: string;
   modifiedDate: Date | null;
   productCategory: any | null;
   productModel: any | null; 
+
+  static orderByProp = ['Name', 'Price', 'Size', 'Weight', 'Newer'];
 
   constructor(data: Partial<Product>) {
     this.productId = data.productId ?? 0;
