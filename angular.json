@@ -35,7 +35,7 @@
 						"styles": [
 							"src/theme.scss",
 							"src/styles.scss",
-							"src/theme/light.scss",
+							"src/theme/light.css",
 							"src/theme/dark.css"
 							
 						],

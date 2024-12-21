@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import Countries from "../../../assets/jsonstatic/countries.json";
+import Countries from "../../../assets/jsonstaitc/countries.json";
 import * as countriesJson from 'iso-3166-2.json';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { passwordValidator } from './password-validator';
