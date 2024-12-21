@@ -35,9 +35,9 @@
 						"styles": [
 							"src/theme.scss",
 							"src/styles.scss",
-							"src/theme/light.css",
-							"src/theme/dark.css",
-							"node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+							"src/theme/light.scss",
+							"src/theme/dark.css"
+							
 						],
 						"stylePreprocessorOptions": {
 						"includePaths": ["src"]
@@ -107,7 +107,7 @@
 						],
 						"styles": [
 							"src/styles.scss",
-							"node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+							"src/theme/light.scss"
 						],
 						"scripts": []
 					}
