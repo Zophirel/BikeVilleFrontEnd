@@ -1,12 +1,17 @@
 @use '@angular/material' as mat;
 @use './theme/theme-colors.scss' as BikeVilleColors; // location of generated file
+@use './theme/theme.scss';
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html {
 
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+html {
     height: 100%;
     margin: 0;
     display: flex;
@@ -28,6 +33,7 @@ app-root,
 app-home, 
 app-search,
 app-login,
+app-filtler-dialog, 
 main, body {
     height: 100%;
     width: 100%;
@@ -38,10 +44,54 @@ main, body {
         color: var(--mat-sys-primary);  
     }
 
+
+    /* chip overrides */
+    .mat-mdc-standard-chip.mat-mdc-chip-selected.mat-primary, .mat-mdc-standard-chip.mat-mdc-chip-highlighted.mat-primary{
+        --mdc-chip-elevated-selected-container-color: var(--mat-sys-primary) !important;
+    }
+
+    /* list overrides */
+    .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text{
+        color: var(--mat-sys-primary);
+    }
+    .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after, .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after{   
+        color: var(--mat-sys-primary);
+    }
+    /*sel   ect overrides */
+    .mat-mdc-form-field.mat-focused .mat-mdc-select-arrow{
+        color: var(--mat-sys-primary);
+    }
+
+
+    /* tab overrides */
+    .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label{
+        color: var(--mat-sys-primary);
+    }
+    .mat-mdc-tab.mdc-tab--active:focus .mdc-tab__text-label{
+        color: var(--mat-sys-primary);
+    }
+
+
+
+    @include mat.dialog-overrides((
+      container-shape: 30px
+    ));
+    
+
     @include mat.button-overrides((
         protected-container-color: var(--mat-sys-primary),
         protected-label-text-color: var(--mat-sys-on-primary),
+        filled-container-color: var(--mat-sys-primary),
+        filled-label-text-color: var(--mat-sys-on-primary),
     ));
+
+    @include mat.tabs-overrides((
+
+    ));
+
+    .mdc-tab__text-label, .mdc-evolution-chip__text-label.mat-mdc-chip-action-label{
+        font-family: 'Roboto', sans-serif;
+    }
 }
 
 app-navbar {

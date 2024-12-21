@@ -23,9 +23,6 @@ export class FilterComponent implements OnInit {
 
   ngOnInit(): void {
     try{
-      //console.log("FilterComponent");
-      //console.log(this.category);
-      //console.log(this.subCategories)
       if(this.subCategories != undefined){
         for(let sub of this.subCategories){
           this.subCategoriesForUi.push(new EmittedFilterValue(this.category!, sub.name, sub.productCategoryId, false));
@@ -40,15 +37,12 @@ export class FilterComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(FilterDialog, {
       data: this.subCategoriesForUi,
-      disableClose: true
+      disableClose: true,
+      
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      //console.log('The dialog was closed');
-     
+    dialogRef.afterClosed().subscribe(result => {     
       if (result !== undefined) {
-        //console.log("FilterComponent Result");
-        //console.log(result);
         this.subCategoriesForUi = result.subCategories;
         this.categoriesEmitter.emit(result.subCategories);
       }

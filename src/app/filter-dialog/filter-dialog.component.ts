@@ -21,7 +21,6 @@ import {EmittedFilterValue} from './emitted-filter.module.';
     FormsModule,
     CommonModule,
     MatChipsModule,
-    
   ],
   templateUrl: './filter-dialog.component.html',
   styleUrl: './filter-dialog.component.scss'
@@ -31,11 +30,6 @@ export class FilterDialog {
   readonly dialogRef = inject(MatDialogRef<FilterDialog>);
   readonly data = inject<FilterDialog>(MAT_DIALOG_DATA);
   subCategories: EmittedFilterValue[] = (this.data as unknown as EmittedFilterValue[]) ;
-
-  constructor() {
-    console.log("FilterDialog constructor");
-    console.log(this.subCategories);
-  }
 
   filter(): void {
     console.log(this.subCategories);
