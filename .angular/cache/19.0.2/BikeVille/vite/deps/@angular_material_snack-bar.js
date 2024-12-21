@@ -1,8 +1,4 @@
 import {
-  MatButton,
-  MatButtonModule
-} from "./chunk-OF22WXSD.js";
-import {
   Overlay,
   OverlayConfig,
   OverlayModule
@@ -14,6 +10,10 @@ import {
   PortalModule,
   TemplatePortal
 } from "./chunk-XPHTHVDZ.js";
+import {
+  MatButton,
+  MatButtonModule
+} from "./chunk-OF22WXSD.js";
 import {
   animate,
   state,
