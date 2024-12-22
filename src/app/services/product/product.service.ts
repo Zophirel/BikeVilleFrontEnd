@@ -8,8 +8,8 @@ import { ProductDescription } from './product.model';
   providedIn: 'root',
 })
 export class ProductService {
-  private productUrl = 'https://localhost:5078/api/Product';
-  private productDescriptionUrl = 'https://localhost:5078/api/ProductDescription';
+  private productUrl = 'https://zophirel.it/api/Product';
+  private productDescriptionUrl = 'https://zophirel.it/api/ProductDescription';
 
   constructor(private http: HttpClient) {}
 

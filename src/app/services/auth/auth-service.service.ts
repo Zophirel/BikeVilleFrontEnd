@@ -40,7 +40,7 @@ export class AuthService {
  
     const headers = { 'content-type': 'application/json' }    
    
-    return this.client.post('https://localhost:5078/api/auth/login', body, {
+    return this.client.post('https://zophirel.it/api/auth/login', body, {
       responseType: 'text', headers: headers, observe: 'response'
     });
 
@@ -49,7 +49,7 @@ export class AuthService {
 
   checkAuth() : Observable<any> {
     const headers = { 'Authorization': 'Basic ' + this.auth }
-    return this.client.get('https://localhost:5078/api/auth/test', {
+    return this.client.get('https://zophirel.it/api/auth/test', {
       responseType: 'text', headers: headers, observe: 'response', 
     });
   }

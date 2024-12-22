@@ -16,7 +16,7 @@ export class ProductService {
   constructor(private http: HttpClient) { }
   
   getAllProducts() {
-    return this.http.get<Product[]>('https://localhost:5078/api/product/view');
+    return this.http.get<Product[]>('https://zophirel.it/api/product/view');
   }
 
   organizeProducts(data: Product[]): Map<string, Product[]> {
@@ -29,7 +29,7 @@ export class ProductService {
 
 
   getAllProductCategories(){
-    return this.http.get<ProductCategory[]>('https://localhost:5078/api/productCategory')
+    return this.http.get<ProductCategory[]>('https://zophirel.it/api/productCategory')
   }
 
   bindProductToCategory(
