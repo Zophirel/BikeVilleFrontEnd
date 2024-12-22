@@ -1,3 +1,6 @@
+#IMPORTANT FOR DEPLOYMENT
+src/assets
+
 # Logs
 logs
 *.log
