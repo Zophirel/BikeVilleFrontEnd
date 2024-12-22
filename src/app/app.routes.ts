@@ -1,31 +1,17 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';
-import { SignupComponent } from './auth/signup/signup.component';
-import { ForgotPassComponent } from './auth/forgot-pass/forgot-pass.component';
-import { HomeComponent } from './home/home.component';
-import { SearchComponent } from './search/search.component';
-import { SignalRComponent } from './signalr/signalr.component';
-import { AccountComponent } from './account/account/account.component';
-import { FaqsComponent } from './account/faqs/faqs.component';
-import { AboutComponent } from './account/about/about.component';
-import { CartComponent } from './cart/cart.component';
-import { PrivacypolicyComponent } from './privacypolicy/privacypolicy.component';
-import { CheckoutComponent } from './checkout/checkout.component';
-import { ProductComponent } from './product/product.component';
-
 export const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
-    {path: 'home', component: HomeComponent},
-    {path: 'account', component: AccountComponent},
-    {path: 'about', component: AboutComponent},
-    {path: 'faq', component: FaqsComponent},
-    {path: 'cart', component: CartComponent},
-    {path: 'checkout', component: CheckoutComponent},
-    {path: 'privacy', component: PrivacypolicyComponent},
-    {path: 'search', component: SearchComponent},
-    {path: 'login', component: LoginComponent},
-    {path: 'signup', component: SignupComponent},
-    {path: 'forgot-password', component: ForgotPassComponent},
-    {path: 'signalr', component: SignalRComponent},
-    {path: 'product', component: ProductComponent},
+    {path: 'home', loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)},
+    {path: 'account', loadComponent: () => import('./account/account/account.component').then(m => m.AccountComponent)},
+    {path: 'about', loadComponent: () => import('./account/about/about.component').then(m => m.AboutComponent)},
+    {path: 'faq', loadComponent: () => import('./account/faqs/faqs.component').then(m => m.FaqsComponent)},
+    {path: 'cart', loadComponent: () => import('./cart/cart.component').then(m => m.CartComponent)},
+    {path: 'checkout', loadComponent: () => import('./checkout/checkout.component').then(m => m.CheckoutComponent)},
+    {path: 'privacy', loadComponent: () => import('./privacypolicy/privacypolicy.component').then(m => m.PrivacypolicyComponent)},
+    {path: 'search', loadComponent: () => import('./search/search.component').then(m => m.SearchComponent)},
+    {path: 'login', loadComponent: () => import('./auth/login/login.component').then(m => m.LoginComponent)},
+    {path: 'signup', loadComponent: () => import('./auth/signup/signup.component').then(m => m.SignupComponent)},
+    {path: 'forgot-password', loadComponent: () => import('./auth/forgot-pass/forgot-pass.component').then(m => m.ForgotPassComponent)},
+    {path: 'signalr', loadComponent: () => import('./signalr/signalr.component').then(m => m.SignalRComponent)},
+    {path: 'product', loadComponent: () => import('./product/product.component').then(m => m.ProductComponent)},
 ];

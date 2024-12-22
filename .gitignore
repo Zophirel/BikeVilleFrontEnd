@@ -1,5 +1,5 @@
 #IMPORTANT FOR DEPLOYMENT
-src/assets
+src/assets/*
 
 # Logs
 logs
