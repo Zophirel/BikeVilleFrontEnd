@@ -53,4 +53,10 @@ export class AuthService {
       responseType: 'text', headers: headers, observe: 'response', 
     });
   }
+
+  getCountriesJson() : Observable<any> {
+    return this.client.get('https://bikeville.s3.cubbit.eu/jsonstatic%2Fcountries.json', {
+      responseType: 'text', observe: 'response'
+    });
+  }
 }

@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import Countries from "../../../assets/jsonstaitc/countries.json";
 import * as countriesJson from 'iso-3166-2.json';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { passwordValidator } from './password-validator';
@@ -53,7 +52,7 @@ export class SignupComponent {
   passwordFormControl = new FormControl('', [Validators.required, passwordValidator()]);
   signUpFormControl = new FormControl('', [Validators.required]);
   
-  options: Country[] = Countries;
+  options: Country[] = [];
   filteredCountries: Country[];
   filteredState = signal<[string, string][]>([]); 
   
@@ -77,6 +76,10 @@ export class SignupComponent {
         console.log('Authenticated');
       }
     });
+
+    this.authService.getCountriesJson().subscribe((response) => { 
+      this.options = JSON.parse(response.body);
+    });
   }
 
   stateprovince(){
@@ -84,7 +87,7 @@ export class SignupComponent {
   }
 
   setStateProvince(country: string) : void {
-    const countries = countriesJson as Record<string, any>;
+    const countries =  countriesJson as Record<string, any>;
     const countryData = countries[country];
     console.log(countryData.divisions);
     let entries = Object.entries<string>(countryData.divisions);
