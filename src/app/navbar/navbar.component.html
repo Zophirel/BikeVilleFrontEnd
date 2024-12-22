@@ -1,18 +1,18 @@
 <nav class="flex flex-row h-16 bg-white w-full justify-between items-center pl-3 pr-3">
    
     @if(this.isStackedPage){
-        <a routerLink="/home"><img class="cursor-pointer" src="assets/navbar/Back.svg"/></a>
+        <a routerLink="/home"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui%2Fnavbar%2FBack.svg"/></a>
     }
     
     <a routerLink="/home">
-         <img class="h-[36px] cursor-pointer" src="assets/navbar/full-logo.svg">
+         <img class="h-[36px] cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui%2Fnavbar%2Ffull-logo.svg">
     </a>
 
     <div class="flex flex-row gap-3">
-        <a routerLink="/account"><img class="cursor-pointer" src="assets/navbar/User.svg"/></a>
+        <a routerLink="/account"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui%2Fnavbar%2FUser.svg"/></a>
         @if(!this.isSearchPage){
-            <a routerLink="/search"><img class="cursor-pointer" src="assets/navbar/Search.svg"/></a>
+            <a routerLink="/search"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui%2Fnavbar%2FSearch.svg"/></a>
         }  
-        <a routerLink="/cart"><img class="cursor-pointer"src="assets/navbar/Bag.svg"></a>
+        <a routerLink="/cart"><img class="cursor-pointer"src="https://bikeville.s3.cubbit.eu/ui%2Fnavbar%2FBag.svg"></a>
     </div>
 </nav>
