@@ -33,6 +33,8 @@ app-root,
 app-home, 
 app-search,
 app-login,
+app-signup,
+app-forgot-password,
 app-filtler-dialog, 
 app-product,
 main, body {
@@ -44,7 +46,9 @@ main, body {
     .mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label {
         color: var(--mat-sys-primary);  
     }
-
+    .mdc-snackbar {
+        background-color: aqua !important;
+    }
 
     /* chip overrides */
     .mat-mdc-standard-chip.mat-mdc-chip-selected.mat-primary, .mat-mdc-standard-chip.mat-mdc-chip-highlighted.mat-primary{
@@ -62,8 +66,6 @@ main, body {
     .mat-mdc-form-field.mat-focused .mat-mdc-select-arrow{
         color: var(--mat-sys-primary);
     }
-
-
     /* tab overrides */
     .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label{
         color: var(--mat-sys-primary);
@@ -71,7 +73,6 @@ main, body {
     .mat-mdc-tab.mdc-tab--active:focus .mdc-tab__text-label{
         color: var(--mat-sys-primary);
     }
-
 
 
     @include mat.dialog-overrides((
@@ -84,6 +85,9 @@ main, body {
         protected-label-text-color: var(--mat-sys-on-primary),
         filled-container-color: var(--mat-sys-primary),
         filled-label-text-color: var(--mat-sys-on-primary),
+        outlined-container-shape: 30px,
+        outlined-container-height: 48px,
+        outlined-outline-color: var(--mat-sys-primary)
     ));
 
     @include mat.tabs-overrides((
