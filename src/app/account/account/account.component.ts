@@ -16,6 +16,9 @@ import { AuthGoogleService } from '../../services/auth/google.service';
 export class AccountComponent {
   private googleService = inject(AuthGoogleService);
   private router = inject(Router);  
+  private tokens = localStorage.getItem('auth');
+
+  
   isDropdownOpen = false; // Stato che indica se il dropdown è aperto o chiuso
   images: string[] = [
     "https://bikeville.s3.cubbit.eu/images/account/greater-than.png",
@@ -23,6 +26,32 @@ export class AccountComponent {
   ];
 
   currentArrow: string = this.images[0];
+  constructor(){
+    console.log(this.getTokenData(this.getIdToken()));
+  }
+  
+  getAccessToken(){
+    let tokens = localStorage.getItem('auth');
+    if(tokens){
+      let auth = JSON.parse(tokens);
+      return auth[1];
+    } 
+  }
+
+  getIdToken(){
+    let tokens = localStorage.getItem('auth');
+    if(tokens){
+      let auth = JSON.parse(tokens);
+      return auth[0];
+    } 
+  }
+
+  getTokenData(token: string){
+    let data = token.split('.')[1];
+    let decodedData = atob(data);
+    return JSON.parse(decodedData);
+  }
+
 
   // Funzione per aprire o chiudere il dropdown
   toggleDropdown() {
