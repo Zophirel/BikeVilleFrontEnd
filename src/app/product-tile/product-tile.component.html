@@ -1,8 +1,8 @@
-<div id="w-44">
-    <img class="object-cover h-[39vw] w-[39vw] max-w-[200px] max-h-[200px] rounded-xl" src="https://bikeville.s3.cubbit.eu/images/slider/1.webp"/>
-</div>
-<div class="w-[39vw] max-w-[200px]">
-    <h1 class="mt-2 font-semibold text-wrap">{{this.product?.name}}</h1>
-    <p class="text-sm opacity-70">${{this.product?.listPrice}}</p>
-</div>
-
+<div id="w-44" (click)="navigateToProduct()">
+    <img class="object-cover h-[39vw] w-[39vw] max-w-[200px] max-h-[200px] rounded-xl" 
+         src="data:image/gif;base64,{{ this.product?.thumbNailPhoto }}" />
+  </div>
+  <div class="w-[39vw] max-w-[200px]">
+    <h1 class="mt-2 font-semibold text-wrap">{{ this.product?.name }}</h1>
+    <p class="text-sm opacity-70">${{ this.product?.listPrice }}</p>
+  </div>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../services/cart/cart.service'; // Importa il servizio
+import { CartService } from '../services/cart/cart.service';
 
 @Component({
   selector: 'checkout',

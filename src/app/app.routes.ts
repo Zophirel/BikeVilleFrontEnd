@@ -13,5 +13,5 @@ export const routes: Routes = [
     {path: 'signup', loadComponent: () => import('./auth/signup/signup.component').then(m => m.SignupComponent)},
     {path: 'forgot-password', loadComponent: () => import('./auth/forgot-pass/forgot-pass.component').then(m => m.ForgotPassComponent)},
     {path: 'signalr', loadComponent: () => import('./signalr/signalr.component').then(m => m.SignalRComponent)},
-    {path: 'product', loadComponent: () => import('./product/product.component').then(m => m.ProductComponent)},
+    {path: 'product/:id', loadComponent: () => import('./product/product.component').then(m => m.ProductComponent)},
 ];

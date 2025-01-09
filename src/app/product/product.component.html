@@ -1,66 +1,70 @@
 <app-navbar></app-navbar>
-<div *ngIf="product; " class="w-full h-screen flex flex-col">
-<!--
-  <div *ngIf="imageSrc; ">
-    <img [src]="imageSrc" alt="{{ product.name }}"
-      class="w-full h-[35vh] sm:h-[60vh] object-cover"
-      (error)="onImageError()"/>
-      <p *ngIf="imageError" class="text-gray-500 text-lg">Immagine non disponibile</p>
+<ng-template #noImage>
+  <p class="text-gray-500 text-lg">Immagine non disponibile</p>
+</ng-template>
+
+<div *ngIf="product; else noProduct" class="flex flex-col p-6 bg-gray-100 shadow-lg rounded-lg">
+  <!-- Immagine grande al centro -->
+  <img 
+    src="data:image/gif;base64,{{ product.thumbNailPhoto }}" 
+    class="w-full h-auto object-cover rounded-lg shadow-md" 
+    alt="Product Image"
+  />
+  <!-- Informazioni del prodotto -->
+  <div class="flex-1 text-left my-6 px-4">
+    <h1 class="text-5xl font-extrabold text-gray-800 mb-4 shadow-sm">
+      {{ product.name || 'Nome non disponibile' }}
+    </h1>
+    <p class="mt-2 text-lg text-gray-700">
+      <strong>Codice Prodotto:</strong> {{ product.productNumber || 'N/A' }}
+    </p>
+    <p class="mt-2 text-lg text-gray-700">
+      <strong>Descrizione:</strong> {{ productDescription?.description || 'Descrizione non disponibile' }}
+    </p>
+
+    <!-- Menu a tendina per colore -->
+    <div *ngIf="product?.color" class="mt-4">
+      <label for="color-select" class="block text-lg font-semibold text-gray-700">Colore:</label>
+      <select id="color-select" class="mt-2 p-3 border border-gray-300 rounded-lg shadow-sm w-full focus:ring-2 focus:ring-yellow-500">
+        <option [value]="product.color">{{ product.color }}</option>
+      </select>
+    </div>
+
+    <!-- Menu a tendina per taglia -->
+    <div *ngIf="product?.size" class="mt-4">
+      <label for="size-select" class="block text-lg font-semibold text-gray-700">Taglia:</label>
+      <select id="size-select" class="mt-2 p-3 border border-gray-300 rounded-lg shadow-sm w-full focus:ring-2 focus:ring-yellow-500">
+        <option [value]="product.size">{{ product.size }}</option>
+      </select>
+    </div>
+
+    <!-- Prezzo -->
+    <p class="font-bold text-2xl text-yellow-600 mt-3 shadow-sm">
+      Prezzo: {{ product.listPrice || 0 | currency }}
+    </p>
   </div>
--->
-  <img src="https://bikeville.s3.cubbit.eu/images/slider/1.webp" alt="{{ product.name }}"
-  class="w-full h-[35vh] sm:h-[60vh] object-cover">
 
-  <div *ngIf="productDescription" class="flex flex-col p-6 bg-gray-50">
-    <!-- le Informazioni del prodotto a sinistra  -->
-    <div class="flex-1 text-left mb-6">
-      <h1 class="text-4xl font-bold "><strong>{{ product.name }}</strong></h1>
-      <p class="mt-4 text-gray-600"><strong>Codice Prodotto:</strong> {{ product.productNumber }}</p>
-      <p><strong>Descrizione:</strong> {{ productDescription.description }}</p>
-            <p class="text-gray-600"><strong>Colore:</strong> {{ product.color }}</p>
-      <p class=" font-semibold text-lg"><strong>Prezzo:</strong> {{ product.listPrice | currency }}</p>
-    </div>
-
-    <!-- Bottone al centro per aggiungere al carrello -->
-    <div class="flex justify-center items-center">
-      <button 
-        class="px-20 py-3 bg-gray-600 text-white rounded-md hover:bg-yellow-500 hover:text-black transition flex items-center">
-        <svg 
-          class="w-6 h-6 mr-2 fill-current  text-white" 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 24 24">
-          <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Aggiungi al carrello
-      </button>
-    </div>
+  <!-- Bottone al centro per aggiungere al carrello -->
+  <div class="flex justify-center items-center my-6">
+    <button
+      mat-raised-button
+      color="accent"
+      class="px-14 py-4 bg-gray-900 text-white text-xl font-semibold rounded-lg shadow-lg hover:bg-yellow-500 hover:text-black transition-all duration-300 flex items-center"
+    >
+      <mat-icon class="mr-2">add_shopping_cart</mat-icon>
+      Aggiungi al carrello
+    </button>
   </div>
 </div>
 
-<h3 class="text-left text-4xl font-extrabold text-black ml-6 mt-6">Articoli suggeriti</h3>
-<app-product-list></app-product-list>
+<ng-template #noProduct>
+  <p class="text-gray-500 text-lg text-center">Dettagli del prodotto non disponibili.</p>
+</ng-template>
 
-<!--
-  <div class="flex gap-2 mb-6">
-    <img 
-      *ngFor="let img of product?.images"   
-      [src]="img" 
-      alt="Thumbnail" 
-      (click)="changeImage(img)" 
-      class="w-16 h-16 rounded-lg shadow-md cursor-pointer hover:ring-2 hover:ring-yellow-500 transition"
-    />
-  </div>
--->
- 
- <!--MANCA LA DESCRIZIONE    https://zophirel.it/api/ProductDescription 
-  [
-  {
-    "productDescriptionId": 0,
-    "description": "string",
-    "rowguid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "modifiedDate": "2024-12-06T10:45:40.523Z",
-    "productModelProductDescriptions": [
-      "string"
-    ]
-  }
-] -->
+<!-- Prodotti correlati -->
+<div class="related-products my-8" *ngIf="categoryProducts.length > 0">
+  <app-product-list
+    [homeProducts]="categoryProducts"
+    title="Prodotti correlati">
+  </app-product-list>
+</div>
