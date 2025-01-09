@@ -13,7 +13,9 @@ import { AuthGoogleService } from '../services/auth/google.service';
   styleUrls: ['./home.component.scss'],
   imports: [NavbarComponent, SliderComponent, ProductListComponent],
 })
+
 @Injectable({ providedIn: 'root' })
+
 export class HomeComponent {
   homeProducts: Product[] = []; // Lista di prodotti per la home
   productsMapByCategory: Map<string, Product[]> = new Map(); // Mappa per prodotti per categoria
@@ -28,17 +30,22 @@ export class HomeComponent {
   loadProductsList(): void {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
-        // Organizza i prodotti per categoria
+        
+        // Organize products by category
         this.productsMapByCategory = this.productService.organizeProductsByCategory(products);
 
-        // Per la home, estrai i primi 4 prodotti per ogni categoria (opzionale)
+        // Take the first 4 products for each category
         const productsForHome: Product[] = [];
-        for (let productList of this.productsMapByCategory.values()) {
-          productsForHome.push(...productList.slice(0, 4)); // Cambia il numero di prodotti mostrati
+        console.log('Prodotti per categoria:', this.productsMapByCategory);
+        let i = 0;
+        for (let productList of this.productsMapByCategory.keys()) {
+          if(i == 4) break;
+
+          let elem = this.productsMapByCategory.get(productList)![0];
+          productsForHome.push(elem); // Cambia il numero di prodotti mostrati
+          i++;
         }
         this.homeProducts = productsForHome;
-
-        console.log('Prodotti per categoria:', this.productsMapByCategory);
         console.log('Prodotti per la home:', this.homeProducts);
       },
       error: (err) => {

@@ -49,11 +49,16 @@ export class SearchComponent implements OnInit {
         this.allCategories = this.productService.organizeCategories(categories);
         return this.productService.getAllProducts().pipe(
           map(products => {
+           
             this.allProducts = this.productService.organizeProducts(products);
             this.productsByCategory = this.productService.bindProductToCategory(this.allProducts, this.allCategories);
+
             this.productsByCategoryCopy = this.productsByCategory;
             this.productDataSignal.set(this.productsByCategory);
+            console.log(this.productDataSignal())
+            
             this.categories = Array.from(this.allCategories.keys());
+
           })
         );
       })
