@@ -9,7 +9,12 @@
     </a>
 
     <div class="flex flex-row gap-3">
-        <a routerLink="/account"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui/navbar/User.svg"/></a>
+
+        @if(isUserLoggedIn){
+            <a routerLink="/account"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui/navbar/User.svg"/></a>
+        } @else {
+            <a routerLink="/login"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui/navbar/User.svg"/></a>
+        }
         @if(!this.isSearchPage){
             <a routerLink="/search"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui/navbar/Search.svg"/></a>
         }  
