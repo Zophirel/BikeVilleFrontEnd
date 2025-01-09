@@ -90,7 +90,7 @@ export class SignupComponent {
       const idToken = this.googleService.getIdToken();
 
       if(idToken){
-        this.authService.signUpGoogle(idToken).subscribe({
+        this.authService.authWithGoogle(idToken).subscribe({
           next: (data) => {
             console.log('The next value is: ', data);
           },

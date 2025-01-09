@@ -13,6 +13,7 @@ export class AuthService {
   
   constructor(client: HttpClient) {
     this.client = client;
+    
   }
 
   login(email: string, password: string) : Observable<any> {
@@ -36,16 +37,18 @@ export class AuthService {
     });
   }
 
-  signUpGoogle(idToken: string ) : Observable<any> {
+
+  authWithGoogle(idToken: string) : Observable<any> {
     const headers = { 'content-type': 'application/json' }    
     const body = JSON.stringify({ oauthIdToken: idToken }); // Explicitly stringify the JSON payload
 
-    return this.client.post('https://zophirel.it/api/auth/signup/google', body, {
+    return this.client.post('https://zophirel.it/api/auth/google', body, {
       headers: headers,
       responseType: 'text',
       observe: 'response',
     });
   }
+
 
   checkAuth() : Observable<any> {
     const headers = { 'Authorization': 'Basic ' + this.auth }

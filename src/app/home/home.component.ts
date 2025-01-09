@@ -1,10 +1,11 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, inject, Injectable } from '@angular/core';
 import { ProductService } from '../services/products/product.service';
 import { Product } from '../product/product.module';
 import { ProductDescription } from '../services/product/product.model';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SliderComponent } from '../slider/slider.component';
 import { ProductListComponent } from '../product-list/product-list.component';
+import { AuthGoogleService } from '../services/auth/google.service';
 
 @Component({
   selector: 'app-home',
@@ -17,8 +18,10 @@ export class HomeComponent {
   homeProducts: Product[] = []; // Lista di prodotti per la home
   productsMapByCategory: Map<string, Product[]> = new Map(); // Mappa per prodotti per categoria
   productDescription: ProductDescription | null = null;
+  private googleService: AuthGoogleService = inject(AuthGoogleService);
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, ) {
+    console.log(localStorage.getItem('auth'));
     this.loadProductsList();
   }
 

@@ -1,9 +1,6 @@
-
-
 import { Injectable, inject, signal } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { authConfig } from './oauth-config';
-import { set } from 'lodash';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -17,22 +14,19 @@ export class AuthGoogleService {
   router = inject(Router); 
 
   constructor() {
+    
     this.initConfiguration();
   }
 
   initConfiguration() {
     try{
-      
-      console.log('Init Configuration');
       this.oAuthService.configure(authConfig);
       this.oAuthService.setupAutomaticSilentRefresh();
+      
       this.oAuthService.loadDiscoveryDocumentAndTryLogin().then(() => {    
-        console.log('Loaded discovery document');
         let valid = this.oAuthService.hasValidIdToken();
-        console.log(`Valid: ${valid}`);
         if (valid) {
           this.profile.set(this.oAuthService.getIdentityClaims());
-          console.log('Logged in');
         }      
       });
 
@@ -54,6 +48,8 @@ export class AuthGoogleService {
     this.oAuthService.revokeTokenAndLogout();
     this.oAuthService.logOut();
     this.profile.set(null);
+    localStorage.clear();
+
   }
 
   getProfile() {
