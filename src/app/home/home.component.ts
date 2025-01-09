@@ -1,49 +1,46 @@
 import { Component, Injectable } from '@angular/core';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { SliderComponent } from '../slider/slider.component';
-import { ProductListComponent } from "../product-list/product-list.component";
-import { RouterModule } from '@angular/router';
 import { ProductService } from '../services/products/product.service';
 import { Product } from '../product/product.module';
+import { ProductDescription } from '../services/product/product.model';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { SliderComponent } from '../slider/slider.component';
+import { ProductListComponent } from '../product-list/product-list.component';
 
 @Component({
-    selector: 'app-home',
-    imports: [
-        NavbarComponent, 
-        SliderComponent, 
-        ProductListComponent, 
-        RouterModule
-    ],
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.scss'
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  imports: [NavbarComponent, SliderComponent, ProductListComponent],
 })
-
 @Injectable({ providedIn: 'root' })
-
-
 export class HomeComponent {
-    homeProducts: Product[] = [];
-    
-    constructor(private Products : ProductService) {
-       
-        this.Products.getAllProducts().subscribe(
-            (products) => {
-                let arr = Array.from( this.resizeProductMap(this.Products.organizeProducts(products)).entries());  
-                this.homeProducts = arr.map((product) => {return product[1][0]});   
-            }
-        );
-    }
+  homeProducts: Product[] = []; // Lista di prodotti per la home
+  productsMapByCategory: Map<string, Product[]> = new Map(); // Mappa per prodotti per categoria
+  productDescription: ProductDescription | null = null;
 
-    private resizeProductMap(productMap?: Map<string, Product[]>): Map<string, Product[]> {
-        const resizedMap = new Map<string, Product[]>();
-        if (!productMap) return resizedMap;
-    
-        productMap.forEach((productList, key) => {
-          if (productList.length > 0) {
-            resizedMap.set(key, [productList[0]]);
-          }
-        });
-    
-        return resizedMap;
-    }
+  constructor(private productService: ProductService) {
+    this.loadProductsList();
+  }
+
+  loadProductsList(): void {
+    this.productService.getAllProducts().subscribe({
+      next: (products) => {
+        // Organizza i prodotti per categoria
+        this.productsMapByCategory = this.productService.organizeProductsByCategory(products);
+
+        // Per la home, estrai i primi 4 prodotti per ogni categoria (opzionale)
+        const productsForHome: Product[] = [];
+        for (let productList of this.productsMapByCategory.values()) {
+          productsForHome.push(...productList.slice(0, 4)); // Cambia il numero di prodotti mostrati
+        }
+        this.homeProducts = productsForHome;
+
+        console.log('Prodotti per categoria:', this.productsMapByCategory);
+        console.log('Prodotti per la home:', this.homeProducts);
+      },
+      error: (err) => {
+        console.error('Errore durante il caricamento dei prodotti:', err);
+      },
+    });
+  }
 }
