@@ -16,8 +16,8 @@ export class AccountComponent {
   isDropdownOpen = false; // Stato che indica se il dropdown è aperto o chiuso
 
   images: string[] = [
-    "https://bikeville.s3.cubbit.eu/images%2Faccount%2Fgreater-than.png",
-    "https://bikeville.s3.cubbit.eu/images%2Faccount%2Fdown.png",
+    "https://bikeville.s3.cubbit.eu/images/account/greater-than.png",
+    "https://bikeville.s3.cubbit.eu/images/account/down.png",
   ];
 
   currentArrow: string = this.images[0];
