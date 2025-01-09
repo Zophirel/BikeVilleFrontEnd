@@ -8,13 +8,15 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { ProductCategory } from './product-category.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-product',
   standalone: true,
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css'],
-  imports: [NavbarComponent, ProductListComponent, CommonModule, FormsModule],
+  imports: [NavbarComponent, ProductListComponent, CommonModule, FormsModule,MatIconModule,MatButtonModule],
 })
 export class ProductComponent implements OnInit {
   product: Product | null = null; // Prodotto singolo
@@ -36,10 +38,7 @@ export class ProductComponent implements OnInit {
         this.fetchProduct(productId);
       }
     });
-
-    // Carica categorie e prodotti organizzati
   }
-
 
   fetchProduct(productId: number): void {
     this.productService.getProductById(productId).subscribe({
@@ -53,39 +52,18 @@ export class ProductComponent implements OnInit {
   }
 
   loadCategoryProducts(categoryId: number): void {
-    // Ottieni la categoria di prodotto
-    let category: ProductCategory | undefined;
-    this.productsMapByCategory.forEach((productMap, cat) => {
-      if (cat.productCategoryId === categoryId) {
-        category = cat;
-      }
-    });
-
-    // Se trovi la categoria, carica i prodotti associati
-    if (category) {
-      const categoryProducts = this.productsMapByCategory.get(category)?.get(category.productCategoryId.toString()) || [];
-      this.categoryProducts = categoryProducts.filter(product => product.productId !== this.product?.productId);
-    }
-  }
-
-  loadProductsList(): void {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
-        const productsMap = this.productService.organizeProductsByCategory(products);
-        this.productService.getAllProductCategories().subscribe({
-          next: (categories) => {
-            const categoriesMap = this.productService.organizeCategories(categories);
-            this.productsMapByCategory = this.productService.bindProductToCategory(
-              productsMap,
-              categoriesMap
-            );
-          },
-          error: (err) =>
-            console.error('Errore durante il caricamento delle categorie:', err),
-        });
+        // Filtri direttamente tutti i prodotti ottenuti da getAllProducts
+        this.categoryProducts = products.filter(
+          (product) =>
+            product.productCategoryId === categoryId &&
+            product.productId !== this.product?.productId
+        );
       },
       error: (err) =>
-        console.error('Errore durante il caricamento dei prodotti:', err),
+        console.error('Errore durante il caricamento dei prodotti correlati:', err),
     });
   }
-}
+    // Se trovi la categoria, carica i prodotti associati
+  }

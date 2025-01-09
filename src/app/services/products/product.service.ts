@@ -30,7 +30,7 @@ export class ProductService {
 
 
   getAllProductCategories(){
-    return this.http.get<ProductCategory[]>('https://zophirel.it/api/productCategory')
+    return this.http.get<ProductCategory[]>('https://zophirel.it/api/ProductCategory') // articoli
   }
 
 
