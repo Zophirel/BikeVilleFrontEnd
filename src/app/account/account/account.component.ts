@@ -1,23 +1,26 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Component, HostListener, inject, OnInit} from '@angular/core';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthGoogleService } from '../../services/auth/google.service';
-
+import { HttpClient } from '@angular/common/http';
+import { FormsModule, NgForm } from '@angular/forms';
+import { ChangeComponent } from '../change/change.component';
 
 @Component({
   selector: 'app-account',
   standalone: true,
-  imports: [NavbarComponent, CommonModule],
+  imports: [NavbarComponent, CommonModule, FormsModule],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
 })
 
-export class AccountComponent {
+export class AccountComponent implements OnInit{
   private googleService = inject(AuthGoogleService);
   private router = inject(Router);  
   private tokens = localStorage.getItem('auth');
-
+  data: any; //prova
   
   isDropdownOpen = false; // Stato che indica se il dropdown è aperto o chiuso
   images: string[] = [
@@ -26,10 +29,10 @@ export class AccountComponent {
   ];
 
   currentArrow: string = this.images[0];
-  constructor(){
+  constructor(private http: HttpClient){
     console.log(this.getTokenData(this.getIdToken()));
   }
-  
+
   getAccessToken(){
     let tokens = localStorage.getItem('auth');
     if(tokens){
@@ -52,6 +55,14 @@ export class AccountComponent {
     return JSON.parse(decodedData);
   }
 
+  ngOnInit(): void {
+    this.data = this.getTokenData(this.getIdToken());
+  }
+
+  changeProfile() {
+    // this.change.changeProfile(this.data.sid);
+    this.router.navigateByUrl('/change');
+  }
 
   // Funzione per aprire o chiudere il dropdown
   toggleDropdown() {
@@ -86,6 +97,7 @@ export class AccountComponent {
   
 
 }
+
 
 
 
