@@ -1,0 +1,113 @@
+<app-navbar class="w-full"></app-navbar>
+<div class="relative top-4">
+    <h1 class="text-center  font-semibold text-3xl text-slate-950 self-start my-2">Change your data</h1>
+    <div class="w-full flex flex-col justify-center items-center" >
+      <form class="w-[300px] flex flex-col justify-center ">
+        <mat-form-field>
+          <mat-label>Select title</mat-label>
+          <mat-select [(ngModel)]="title" name="title">
+            <mat-option value="--">--</mat-option>
+            <mat-option value="Mr">Mr</mat-option>
+            <mat-option value="Mr">Ms</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <div class="flex flex-row gap-2">
+          <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input  [(ngModel)]="name" name="name" type="text" matInput required [maxLength]="50" [formControl]="signUpFormControl">
+          </mat-form-field>
+          
+          <mat-form-field class="example-full-width">
+            <mat-label>Middle</mat-label>
+            <input  [(ngModel)]="middle" name="middle" matInput [maxLength]="50">
+          </mat-form-field>
+        
+          <mat-form-field class="example-full-width" >
+            <mat-label>Surname</mat-label>
+            <input [(ngModel)]="surname" name="surname" matInput required [maxLength]="50" [formControl]="signUpFormControl">
+          </mat-form-field>
+        </div>
+            
+        <mat-form-field class="w-full">
+          <mat-label>Email</mat-label>
+          <input  [(ngModel)]="email" name="email" type="email" matInput [formControl]="emailFormControl"  placeholder="Ex. pat@example.com">
+          @if (emailFormControl.hasError('required')) {
+            <mat-error>Email is <strong>required</strong></mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Phone Number</mat-label>
+            <input  [(ngModel)]="phone" name="phone" matInput required [maxLength]="15" type="number" [formControl]="signUpFormControl">
+        </mat-form-field>
+        
+        <mat-form-field class="w-full">
+            <mat-label>Company Name</mat-label>
+            <input  [(ngModel)]="phone" name="phone" matInput required [maxLength]="15" type="number" [formControl]="signUpFormControl">
+        </mat-form-field>
+        
+        <mat-form-field class="w-full">
+              <mat-label>Address Line 1</mat-label>
+              <input  [(ngModel)]="name" name="name" type="text" matInput required [maxLength]="50" [formControl]="signUpFormControl">
+            </mat-form-field>
+            
+            <mat-form-field class="w-full">
+              <mat-label>Address Line 2</mat-label>
+              <input  [(ngModel)]="middle" name="middle" matInput [maxLength]="50">
+            </mat-form-field>
+       
+        
+            <mat-form-field class="example-full-width" >
+              <mat-label>City</mat-label>
+              <input [(ngModel)]="surname" name="surname" matInput required [maxLength]="50" [formControl]="signUpFormControl">
+            </mat-form-field>
+
+
+            <mat-form-field class="w-full">
+                <mat-label>Country / Region</mat-label>
+                <input #inputCountry
+                       type="text"
+                       placeholder=""
+                       matInput
+                       [formControl]="signUpFormControl"
+                       [matAutocomplete]="auto"
+                       (input)="filterCountry()"
+                       (focus)="filterCountry()"
+                       required
+                       >
+                <mat-autocomplete requireSelection #auto="matAutocomplete">
+                  @for (country of filteredCountries; track country) {
+                    <mat-option (click)="setStateProvince(country.code)" [value]="country.name">{{country.name}}</mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>State / Province</mat-label>
+                <input #inputState type="text"
+                      matInput
+                      [formControl]="signUpFormControl"
+                      [matAutocomplete]="auto1"
+                      (input)="filterStateProvince()"
+                      [maxLength]="50"
+                      required />
+                <mat-autocomplete requireSelection #auto1="matAutocomplete">
+                  @for (option of filteredState(); track option) {
+                    <mat-option [value]="option[1]">
+                    {{ option[1] }}
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+              
+              <mat-form-field class="example-full-width" >
+                <mat-label>Postal Code</mat-label>
+                <input [(ngModel)]="surname" name="surname" matInput required [maxLength]="50" [formControl]="signUpFormControl">
+              </mat-form-field>
+          
+
+          <button mat-raised-button class="submit m-4">Save Changes</button>
+      </form>
+    </div>
+  </div>
