@@ -111,7 +111,7 @@ export class LoginComponent {
       error: (err) => {
         console.error('An error occurred:', err);
         console.log('Full error details:', err.message);
-        this.openSnackBar('An error occurred: ' + err.message, 'Close');
+        this.openSnackBar(err.error, 'Close');
       },
       complete: () => {console.log('There are no more actions to happen.')}
     });
