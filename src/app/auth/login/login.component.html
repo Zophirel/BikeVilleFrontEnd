@@ -8,11 +8,11 @@
     <form class="w-[280px] flex flex-col justify-center ">
       <mat-form-field class="example-full-width">
         <mat-label>Email</mat-label>
-        <input matInput>
+        <input [(ngModel)]="email" name="email" matInput>
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Password</mat-label>
-        <input type="password" matInput>
+        <input name="password" type="password" matInput [(ngModel)]="password">
       </mat-form-field>
       <a mat-button routerLink="/forgot-password" class="opacity-50 text-sm text-end transition-opacity hover:opacity-100">Forgot password?</a>
       <button mat-raised-button class="submit" (click)="login()">Login</button>
