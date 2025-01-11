@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { authConfig } from './oauth-config';
 import { Router } from '@angular/router';
+import { AuthService } from './auth-service.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,12 +15,12 @@ export class AuthGoogleService {
   router = inject(Router); 
 
   constructor() {
-    
     this.initConfiguration();
   }
 
   initConfiguration() {
     try{
+      authConfig.redirectUri = `${window.location.origin}${this.router.url}`;
       this.oAuthService.configure(authConfig);
       this.oAuthService.setupAutomaticSilentRefresh();
       
@@ -41,6 +42,7 @@ export class AuthGoogleService {
   }
 
   login() {
+    this.initConfiguration();
     this.oAuthService.initImplicitFlow();
   }
 

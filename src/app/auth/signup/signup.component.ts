@@ -137,10 +137,10 @@ export class SignupComponent {
         console.log('The next value is: ', data);
       },
       error: (err) => {
-        console.error('An error occurred:', err);
-        console.log('Full error details:', err.message);
+        console.log('An error occurred:', err);
+ 
         this.messageStatus = MessageStatus.Error;
-        this.openSnackBar('An error occurred: ' + err.message, 'Close');
+        this.openSnackBar(err.error, 'Close');
       },
       complete: () => {console.log('There are no more actions to happen.')}
     });  
