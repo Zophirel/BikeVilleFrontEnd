@@ -17,6 +17,28 @@
                             <img src="https://s3.cubbit.eu/bikeville/images/checkout/edit-pen.png" alt="Edit Address" class="w-11 h-11 object-contain">
                         </button>
                     </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 font-semibold">Address:</span>
+                            <span class="text-gray-800">{{ address?.addressLine1 }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 font-semibold">City:</span>
+                            <span class="text-gray-800">{{ address?.city }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 font-semibold">State:</span>
+                            <span class="text-gray-800">{{ address?.stateProvince }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 font-semibold">Country:</span>
+                            <span class="text-gray-800">{{ address?.countryRegion }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600 font-semibold">Postal Code:</span>
+                            <span class="text-gray-800">{{ address?.postalCode }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Contenitore 2 -->
