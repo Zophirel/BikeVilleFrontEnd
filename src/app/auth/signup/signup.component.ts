@@ -11,14 +11,17 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import * as countriesJson from 'iso-3166-2.json';
-import { ErrorStateMatcher } from '@angular/material/core';
 import { passwordValidator } from './password-validator';
 import { AuthGoogleService } from '../../services/auth/google.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SignUpData } from '../../services/auth/models/sign-up-data.model';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MessageStatus } from './Enums';
+import EmailMatcher from './models/EmailMatcher';
+import PasswordMatcher from './models/PasswordMatcher';
+import Country  from './models/Country';
+
 
 @Component({
     selector: 'app-signup',
@@ -85,8 +88,7 @@ export class SignupComponent {
       this.loading.set(true);
     }
 
-    effect( () => {
-      const profileData = this.googleService.profile();
+    effect(() => {
       const idToken = this.googleService.getIdToken();
 
       if(idToken){
@@ -103,7 +105,7 @@ export class SignupComponent {
             this.loading.set(false);
             
             this.messageStatus = MessageStatus.Success;
-            this.openSnackBar("Successfully signed up!", 'Close');
+            this.openSnackBar("Successfully signed up! A verification email has been sent!", 'Close');
             await this.router.navigateByUrl('/home');
           }
         })
@@ -123,7 +125,7 @@ export class SignupComponent {
       messageStatusCss = 'snackbar-container-warning';
     }
 
-    this._snackBar.open(message, action, {duration: 500000, panelClass: [messageStatusCss] });
+    this._snackBar.open(message, action, {duration: 3000, panelClass: [messageStatusCss] });
   } 
 
   signUp() {
@@ -142,7 +144,9 @@ export class SignupComponent {
         this.messageStatus = MessageStatus.Error;
         this.openSnackBar(err.error, 'Close');
       },
-      complete: () => {console.log('There are no more actions to happen.')}
+      complete: () => {
+        console.log('There are no more actions to happen.')
+      }
     });  
   }
 
@@ -151,11 +155,6 @@ export class SignupComponent {
   }
 
   ngOnInit() {
-    this.authService.checkAuth().subscribe((response) => {
-      if(response.status == 200){
-        console.log('Authenticated');
-      }
-    });
 
     this.authService.getCountriesJson().subscribe((response) => { 
       this.options = JSON.parse(response.body);
@@ -209,30 +208,9 @@ export class SignupComponent {
 
   hide = signal(true);
   
-  clickEvent(event: MouseEvent) {
+  swapHide(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
 
-}
-
-class Country {
-  constructor(public name: string, public code: string) {}
-}
-
-/** Error when invalid control is dirty, touched, or submitted. */
-class EmailMatcher implements ErrorStateMatcher {
-
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
-
-class PasswordMatcher implements ErrorStateMatcher {
-
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
 }

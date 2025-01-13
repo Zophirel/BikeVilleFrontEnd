@@ -15,4 +15,5 @@ export const routes: Routes = [
     {path: 'forgot-password', loadComponent: () => import('./auth/forgot-pass/forgot-pass.component').then(m => m.ForgotPassComponent), data: {animation: "ForgotPasswordPage"}},
     {path: 'signalr', loadComponent: () => import('./signalr/signalr.component').then(m => m.SignalRComponent), data: {animation: "SignalRPage"}},
     {path: 'product/:id', loadComponent: () => import('./product/product.component').then(m => m.ProductComponent), data: {animation: "ProductPage"}},
+    {path: 'token/:encodedToken', loadComponent: () => import('./token-page/token-page.component').then(m => m.TokenPageComponent), data: { animation: "TokenPage" }} 
 ];

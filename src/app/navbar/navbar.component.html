@@ -18,6 +18,10 @@
         @if(!this.isSearchPage){
             <a routerLink="/search"><img class="cursor-pointer" src="https://bikeville.s3.cubbit.eu/ui/navbar/Search.svg"/></a>
         }  
-        <a routerLink="/cart"><img class="cursor-pointer"src="https://bikeville.s3.cubbit.eu/ui/navbar/Bag.svg"></a>
+
+        @if(isUserLoggedIn){
+            <a routerLink="/cart"><img class="cursor-pointer"src="https://bikeville.s3.cubbit.eu/ui/navbar/Bag.svg"></a>
+        }
+        
     </div>
 </nav>
