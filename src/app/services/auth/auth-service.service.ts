@@ -34,6 +34,10 @@ export class AuthService {
 
   getTokenData(token: string){
     try {
+      if(!token.includes('.')){
+        token = atob(token);
+      }
+
       let data = token.split('.')[1];
       let decodedData = atob(data);
       return JSON.parse(decodedData);
@@ -78,9 +82,10 @@ export class AuthService {
   validateEmail(token: string) : Observable<any> {
     const headers = { 
       'content-type': 'application/json',
-      "Authorization": "Bearer " + token
-    }    
-    return this.client.post('https://zophirel.it/api/auth/google', {
+      "Authorization": "Bearer " + atob(token)
+    } 
+    
+    return this.client.post('https://zophirel.it/api/auth/emailvalidation', null, {
       headers: headers,
       responseType: 'text',
       observe: 'response',
