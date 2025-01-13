@@ -34,6 +34,10 @@ export class AuthService {
 
   getTokenData(token: string){
     try {
+      if(!token.includes('.')){
+        token = atob(token);
+      }
+
       let data = token.split('.')[1];
       let decodedData = atob(data);
       return JSON.parse(decodedData);

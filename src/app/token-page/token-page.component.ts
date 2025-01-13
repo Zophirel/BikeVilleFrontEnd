@@ -51,8 +51,8 @@ export class TokenPageComponent {
   isUserChangingPassword: boolean = false;  
   isUserMigrating: boolean = false;
   isUserVerifyingEmail: boolean = false;
-  resultText: string = '';
-
+  resultText = signal("");
+  
   constructor(private auth: AuthService, private route: ActivatedRoute) {
   }
 
@@ -74,34 +74,37 @@ export class TokenPageComponent {
         this.isUserMigrating = true;
       } else if(this.tokenData.type === 'email-validation'){
         this.isUserVerifyingEmail = true;
+       
         this.auth.validateEmail(this.encodedToken).subscribe({
           next: (response: any) => {
             console.log("Email validated!");
-            this.resultText = "Operation successful, please login to continue";
+            this.resultText.set("Operation successful, please login to continue");
+            this.loading.set(false);
           },
           error: (error: any) => {
-            console.log("Error validating email");
-            console.log(error);
-            this.resultText = "Operation failed, please try again";
+            this.resultText.set(error.error ?? "Email sent, please wait or try again in 15 minutes");
+            this.loading.set(false);
           },
         });
+        
       } else{
-        this.resultText = "Invalid token";
+        this.resultText.set("Invalid token")
+        this.loading.set(false);
       }
     });
-    this.loading.set(false);
+   
   }
 
   changePassword(){
     this.auth.changePassword(this.encodedToken, this.password).subscribe({
       next: (response: any) => {
         console.log("Password changed!");
-        this.resultText = "Password changed successfully, please login to continue";
+        this.resultText.set("Password changed successfully, please login to continue");
       },
       error: (error: any) => {
         console.log("Error changing password");
         console.log(error);
-        this.resultText = "Password change failed, please try again";
+        this.resultText.set("Password change failed, please try again");
       },
     });
   }
@@ -110,12 +113,12 @@ export class TokenPageComponent {
     this.auth.migrateUser(this.encodedToken, this.password).subscribe({
       next: (response: any) => {
         console.log("User migrated!");
-        this.resultText = "User migrated successfully, please login to continue";
+        this.resultText.set("User migrated successfully, please login to continue");
       },
       error: (error: any) => {
         console.log("Error migrating user");
         console.log(error);
-        this.resultText = "User migration failed, please try again";
+        this.resultText.set("User migration failed, please try again");
       },
     });
   }
