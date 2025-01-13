@@ -82,10 +82,9 @@ export class AuthService {
   validateEmail(token: string) : Observable<any> {
     const headers = { 
       'content-type': 'application/json',
-      "Authorization": "Bearer " + atob(token)
-    } 
-    
-    return this.client.post('https://zophirel.it/api/auth/emailvalidation', null, {
+      "Authorization": "Bearer " + token
+    }    
+    return this.client.post('https://zophirel.it/api/auth/google', {
       headers: headers,
       responseType: 'text',
       observe: 'response',

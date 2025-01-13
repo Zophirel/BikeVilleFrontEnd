@@ -52,6 +52,7 @@ export class TokenPageComponent {
   isUserMigrating: boolean = false;
   isUserVerifyingEmail: boolean = false;
   resultText = signal("");
+  
   constructor(private auth: AuthService, private route: ActivatedRoute) {
   }
 
@@ -62,9 +63,6 @@ export class TokenPageComponent {
       this.encodedToken = params['encodedToken']; 
       this.tokenData = this.auth.getTokenData(this.encodedToken);
       
-      console.log(this.tokenData)
-      console.log(params);
-
       if(!this.tokenData){
         this.router.navigateByUrl('/home');
         return;
@@ -115,7 +113,7 @@ export class TokenPageComponent {
     this.auth.migrateUser(this.encodedToken, this.password).subscribe({
       next: (response: any) => {
         console.log("User migrated!");
-        this.resultText.set("User migrated successfully, please login to continue"); ;
+        this.resultText.set("User migrated successfully, please login to continue");
       },
       error: (error: any) => {
         console.log("Error migrating user");
