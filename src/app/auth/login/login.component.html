@@ -8,20 +8,21 @@
     <form class="w-[280px] flex flex-col justify-center ">
       <mat-form-field class="example-full-width">
         <mat-label>Email</mat-label>
-        <input matInput>
+        <input [(ngModel)]="email" name="email" matInput>
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Password</mat-label>
-        <input type="password" matInput>
+        <input name="password" type="password" matInput [(ngModel)]="password">
       </mat-form-field>
       <a mat-button routerLink="/forgot-password" class="opacity-50 text-sm text-end transition-opacity hover:opacity-100">Forgot password?</a>
-      <button mat-raised-button class="submit">Accedi</button>
-      <button mat-stroked-button class="submit">
+      <button mat-raised-button class="submit" (click)="login()">Login</button>
+      <button mat-stroked-button class="submit" (click)="loginWithGoogle()">
         <div class="flex flex-row gap-2 ">
           <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" />
           <h1 class="">Log in with Google</h1>
         </div>
       </button>
+      <a mat-button routerLink="/signup" class="opacity-50 text-sm text-center transition-opacity hover:opacity-100 mt-6">Do not have an account yet? Sign Up</a>
     </form>
   </div>
 </div>

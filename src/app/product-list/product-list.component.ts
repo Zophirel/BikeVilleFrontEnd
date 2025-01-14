@@ -1,42 +1,40 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ProductTileComponent } from '../product-tile/product-tile.component';
 import { Product } from '../product/product.module';
 
 @Component({
   selector: 'app-product-list',
-  standalone: true,
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss'],
   imports: [ProductTileComponent],
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.scss']
 })
-export class ProductListComponent implements OnChanges {
-  @Input() homeProducts: Product[] | null = null;
+export class ProductListComponent implements OnInit, OnChanges {
+
+  @Input() homeProducts : Product[] | null = null;
   @Input() searchProducts: Map<string, Product[]> | null = null;
   @Input() title: string | undefined;
 
   products: Product[] = [];
 
+  ngOnInit(): void {
+    console.log("ON INIT PRODUCT LIST");
+    this.updateProducts();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['homeProducts'] || changes['searchProducts']) {
-      console.log('Prodotti prima del filtraggio:', this.homeProducts, this.searchProducts);
+    if (changes['searchProducts']) {
       this.updateProducts();
-      console.log('Prodotti finali:', this.products);
     }
   }
 
   private updateProducts(): void {
-    this.products = [];
-
-    if (this.homeProducts?.length) {
-      this.products = this.homeProducts;
-    } else if (this.searchProducts) {
-      this.searchProducts.forEach((productList) => {
-        this.products.push(...productList);
-      });
+    this.products = []; // Reset the products array
+    
+    if (this.searchProducts) {
+      for (const [, productList] of this.searchProducts) {
+        this.products.push(productList[0]); // Add all products from the map
+      }
     }
-  }
-
-  trackByFn(index: number, item: Product): number | undefined {
-    return item.productId; // Ottimizzazione del rendering con un identificatore unico
+    console.log("Processed products:", this.products);
   }
 }

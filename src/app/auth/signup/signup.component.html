@@ -1,129 +1,86 @@
 
 <app-navbar class="w-full"></app-navbar>
 
-<div class="relative top-4">
-  <h1 class="text-center  font-semibold text-3xl text-slate-950 self-start my-2">Create an account</h1>
-  <p class="text-center text-sm opacity-50 mb-8">Please enter your details </p>
-  <div class="w-full flex flex-col justify-center items-center" >
-    <form class="w-[300px] flex flex-col justify-center ">
-      <mat-form-field>
-        <mat-label>Select title</mat-label>
-        <mat-select>
-          <mat-option value="--">--</mat-option>
-          <mat-option value="Mr">Mr</mat-option>
-          <mat-option value="Mr">Ms</mat-option>
-        </mat-select>
-      </mat-form-field>
-      
-      <div class="flex flex-row gap-2">
-        <mat-form-field class="example-full-width">
-          <mat-label>Name</mat-label>
-          <input matInput required [maxLength]="50">
-        </mat-form-field>
-        
-        <mat-form-field class="example-full-width">
-          <mat-label>Middle</mat-label>
-          <input matInput [maxLength]="50">
-        </mat-form-field>
-
-        <mat-form-field class="example-full-width">
-          <mat-label>Surname</mat-label>
-          <input matInput required [maxLength]="50">
-        </mat-form-field>
-      </div>
-          
-      <mat-form-field class="example-full-width">
-        <mat-label>Address</mat-label>
-        <input matInput required [maxLength]="60">
-      </mat-form-field>
-
-      <mat-form-field class="example-full-width">
-        <mat-label>Country / Region</mat-label>
-        <input #inputCountry
-               type="text"
-               placeholder=""
-               matInput
-               [formControl]="signUpFormControl"
-               [matAutocomplete]="auto"
-               (input)="filterCountry()"
-               (focus)="filterCountry()"
-               required
-               >
-        <mat-autocomplete requireSelection #auto="matAutocomplete">
-          @for (country of filteredCountries; track country) {
-            <mat-option (click)="setStateProvince(country.code)" [value]="country.name">{{country.name}}</mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <mat-form-field class="example-full-width">
-        <mat-label>State / Province</mat-label>
-        <input #inputState type="text"
-              matInput
-              [formControl]="signUpFormControl"
-              [matAutocomplete]="auto1"
-              (input)="filterStateProvince()"
-              [maxLength]="50"
-              required />
-        <mat-autocomplete requireSelection #auto1="matAutocomplete">
-          @for (option of filteredState(); track option) {
-            <mat-option [value]="option[1]">
-            {{ option[1] }}
-            </mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
-      
-      <div class="flex flex-row gap-2">
-        <mat-form-field class="example-full-width">
-          <mat-label>City</mat-label>
-          <input matInput required [maxLength]="30">
-        </mat-form-field>
-
-        <mat-form-field class="example-full-width">
-          <mat-label>ZIP</mat-label>
-          <input required matInput [maxLength]="15">
-        </mat-form-field> 
-      </div>
-      <mat-form-field class="w-full">
-        <mat-label>Email</mat-label>
-        <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="emailMatcher" placeholder="Ex. pat@example.com">
-
-        @if (passwordFormControl.hasError('passwordStrength') && !passwordFormControl.hasError('required')) {
-          <mat-error>Please enter a valid email address</mat-error>
-        }
-        @if (emailFormControl.hasError('required')) {
-          <mat-error>Email is <strong>required</strong></mat-error>
-        }
-
-        
-      </mat-form-field>
-
-      <mat-form-field class="w-full">
-        <mat-label>Password</mat-label>
-        <input [formControl]="passwordFormControl" [errorStateMatcher]="passwordMatcher" matInput [type]="hide() ? 'password' : 'text'"/>
-        @let error = passwordFormControl.getError('passwordStrength');
-        @if (passwordFormControl.hasError('required')) {
-          <mat-error>Password is <strong>required</strong></mat-error>
-        } @else if(error) {
-          <mat-error>{{error[0]}}</mat-error>  
-        }
-
-        <button
-          mat-icon-button
-          matSuffix
-          (click)="clickEvent($event)"
-          [attr.aria-label]="'Hide password'"
-          [attr.aria-pressed]="hide()"
-        >
-          <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-
-
-      </mat-form-field>
-  
-      <button mat-raised-button class="submit">Sign Up</button>
-      <app-google-auth></app-google-auth>
-    </form>
+@if(this.loading != null && this.loading()) {
+  <div class="w-full h-full flex justify-center items-center">
+    <mat-spinner diameter="50"></mat-spinner>
   </div>
-</div>
+} @else {
+  <div class="relative top-4">
+    <h1 class="text-center  font-semibold text-3xl text-slate-950 self-start my-2">Create an account</h1>
+    <p class="text-center text-sm opacity-50 mb-8">Please enter your details </p>
+    <div class="w-full flex flex-col justify-center items-center" >
+      <form class="w-[300px] flex flex-col justify-center ">
+        <mat-form-field>
+          <mat-label>Select title</mat-label>
+          <mat-select [(ngModel)]="title" name="title">
+            <mat-option value="--">--</mat-option>
+            <mat-option value="Mr">Mr</mat-option>
+            <mat-option value="Mr">Ms</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <div class="flex flex-row gap-2">
+          <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input  [(ngModel)]="name" name="name" type="text" matInput required [maxLength]="50" [formControl]="signUpFormControl">
+          </mat-form-field>
+          
+          <mat-form-field class="example-full-width">
+            <mat-label>Middle</mat-label>
+            <input  [(ngModel)]="middle" name="middle" matInput [maxLength]="50">
+          </mat-form-field>
+        
+          <mat-form-field class="example-full-width" >
+            <mat-label>Surname</mat-label>
+            <input [(ngModel)]="surname" name="surname" matInput required [maxLength]="50" [formControl]="signUpFormControl">
+          </mat-form-field>
+        </div>
+            
+        <mat-form-field class="w-full">
+          <mat-label>Email</mat-label>
+          <input  [(ngModel)]="email" name="email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="emailMatcher" placeholder="Ex. pat@example.com">
+  
+          @if (passwordFormControl.hasError('passwordStrength') && !passwordFormControl.hasError('required')) {
+            <mat-error>Please enter a valid email address</mat-error>
+          }
+          @if (emailFormControl.hasError('required')) {
+            <mat-error>Email is <strong>required</strong></mat-error>
+          }
+  
+          
+        </mat-form-field>
+  
+        <mat-form-field class="w-full">
+          <mat-label>Password</mat-label>
+          <input  [(ngModel)]="password" name="password"  [formControl]="passwordFormControl" [errorStateMatcher]="passwordMatcher" matInput [type]="hide() ? 'password' : 'text'"/>
+          @let error = passwordFormControl.getError('passwordStrength');
+          @if (passwordFormControl.hasError('required')) {
+            <mat-error>Password is <strong>required</strong></mat-error>
+          } @else if(error) {
+            <mat-error>{{error[0]}}</mat-error>  
+          }
+  
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="swapHide($event)"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide()"
+          >
+            <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+  
+        <button mat-raised-button class="submit m-4" (click)="signUp()">Sign Up</button>
+        <button   type="button" mat-stroked-button (click)="signUpWithGoogle()" class="mx-4 mt-2 mb-4">
+          <mat-icon class>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="">
+          </mat-icon>
+          <p>Sign Up with Google</p>
+        </button>
+      </form>
+    </div>
+  </div>
+}
+

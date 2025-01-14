@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GoogleAuthComponent } from './google-auth.component';
+import { ChangeComponent } from './change.component';
 
-describe('GoogleAuthComponent', () => {
-  let component: GoogleAuthComponent;
-  let fixture: ComponentFixture<GoogleAuthComponent>;
+describe('ChangeComponent', () => {
+  let component: ChangeComponent;
+  let fixture: ComponentFixture<ChangeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GoogleAuthComponent]
+      imports: [ChangeComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(GoogleAuthComponent);
+    fixture = TestBed.createComponent(ChangeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
