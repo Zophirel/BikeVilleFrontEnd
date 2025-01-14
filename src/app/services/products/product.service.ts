@@ -17,7 +17,7 @@ export class ProductService {
   constructor(private http: HttpClient) { }
   
   getAllProducts() {
-    return this.http.get<Product[]>('https://zophirel.it/api/Product');
+    return this.http.get<Product[]>('https://zophirel.it/api/product/view');
   }
 
   organizeProducts(data: Product[]): Map<string, Product[]> {
@@ -30,32 +30,8 @@ export class ProductService {
 
 
   getAllProductCategories(){
-    return this.http.get<ProductCategory[]>('https://zophirel.it/api/ProductCategory') // articoli
+    return this.http.get<ProductCategory[]>('https://zophirel.it/api/productCategory')
   }
-
-
-  getProductById(productId: number) {
-    return this.http.get<Product>(`https://zophirel.it/api/product/${productId}`);
-  }
-
-  getProductDescription(descriptionId: number) {
-    return this.http.get<ProductDescription>(`https://zophirel.it/api/ProductDescription/${descriptionId}`);
-  }
-  
-  organizeProductsByCategory(products: Product[]): Map<string, Product[]> {
-    const productsMap = new Map<string, Product[]>();
-  
-    products.forEach((product) => {
-      const category = product.productCategoryId.toString();
-      if (!productsMap.has(category)) {
-        productsMap.set(category, []);
-      }
-      productsMap.get(category)?.push(product);
-    });
-  
-    return productsMap;
-  }
-  
 
   bindProductToCategory(
     products: Map<string, Product[]>, 
@@ -110,6 +86,26 @@ export class ProductService {
     return allCategories;
   }
   
+  getProductById(productId: number) {
+    return this.http.get<Product>(`https://zophirel.it/api/product/${productId}`);
+  }
+  getProductDescription(descriptionId: number) {
+    return this.http.get<ProductDescription>(`https://zophirel.it/api/ProductDescription/${descriptionId}`);
+  }
+  
+  organizeProductsByCategory(products: Product[]): Map<string, Product[]> {
+    const productsMap = new Map<string, Product[]>();
+  
+    products.forEach((product) => {
+      const category = product.productCategoryId.toString();
+      if (!productsMap.has(category)) {
+        productsMap.set(category, []);
+      }
+      productsMap.get(category)?.push(product);
+    });
+  
+    return productsMap;
+  }
 
 
 }

@@ -5,3 +5,11 @@
   border-radius: 100px;
   padding: 24px;
 }
+
+.snackbar-container-error {
+  --mdc-snackbar-container-color: #f44336 !important;
+}
+
+.snackbar-container-success {
+  --mdc-snackbar-container-color: #4caf50 !important;
+}

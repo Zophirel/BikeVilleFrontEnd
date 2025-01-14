@@ -10,4 +10,12 @@ import { RouterModule } from '@angular/router';
 export class NavbarComponent {
   @Input() isStackedPage: boolean = false;
   @Input() isSearchPage: boolean = false;
+  isUserLoggedIn: boolean = false;
+  
+  constructor(){
+    if(localStorage.getItem('auth')){
+      this.isUserLoggedIn = true;
+    }
+  }
+
 }

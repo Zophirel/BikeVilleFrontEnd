@@ -1,0 +1,111 @@
+<app-navbar class="w-full"></app-navbar>
+<div class="relative top-4">
+    <h1 class="text-center font-semibold text-3xl text-slate-950 self-start my-2">Change your data</h1>
+    <div class="w-full flex flex-col justify-center items-center">
+      <form [formGroup]="changeForm" class="w-[300px] flex flex-col justify-center">
+        <mat-form-field>
+          <mat-label>Select title</mat-label>
+          <mat-select formControlName="title">
+            <mat-option value="--">--</mat-option>
+            <mat-option value="Mr">Mr</mat-option>
+            <mat-option value="Ms">Ms</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <div class="flex flex-row gap-2">
+          <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input type="text" matInput formControlName="name" [maxLength]="50">
+          </mat-form-field>
+          
+          <mat-form-field class="example-full-width">
+            <mat-label>Middle</mat-label>
+            <input matInput formControlName="middle" [maxLength]="50">
+          </mat-form-field>
+        
+          <mat-form-field class="example-full-width">
+            <mat-label>Surname</mat-label>
+            <input matInput formControlName="surname" [maxLength]="50">
+          </mat-form-field>
+        </div>
+            
+        <mat-form-field class="w-full">
+          <mat-label>Email</mat-label>
+          <input type="email" matInput formControlName="email">
+          @if (changeForm.get('email')?.hasError('required')) {
+            <mat-error>Email is <strong>required</strong></mat-error>
+          }
+          @if (changeForm.get('email')?.hasError('email')) {
+            <mat-error>Please enter a valid email address</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>Phone Number</mat-label>
+          <input type="text" matInput formControlName="phone" [maxLength]="15">
+        </mat-form-field>
+        
+        <mat-form-field class="w-full">
+          <mat-label>Company Name</mat-label>
+          <input type="text" matInput formControlName="company" [maxLength]="100">
+        </mat-form-field>
+        
+        <!-- <mat-form-field class="w-full">
+          <mat-label>Address Line 1</mat-label>
+          <input type="text" matInput formControlName="addressLine1" [maxLength]="50">
+        </mat-form-field>
+        
+        <mat-form-field class="w-full">
+          <mat-label>Address Line 2</mat-label>
+          <input type="text" matInput formControlName="addressLine2" [maxLength]="50">
+        </mat-form-field>
+       
+        <mat-form-field class="example-full-width">
+          <mat-label>City</mat-label>
+          <input type="text" matInput formControlName="city" [maxLength]="50">
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>Country / Region</mat-label>
+          <input #inputCountry
+                 type="text"
+                 matInput
+                 formControlName="country"
+                 [matAutocomplete]="auto"
+                 (input)="filterCountry()"
+                 (focus)="filterCountry()">
+          <mat-autocomplete requireSelection #auto="matAutocomplete">
+            @for (country of filteredCountries; track country) {
+              <mat-option (click)="setStateProvince(country.code)" [value]="country.name">{{country.name}}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>State / Province</mat-label>
+          <input #inputState
+                 type="text"
+                 matInput
+                 formControlName="state"
+                 [matAutocomplete]="auto1"
+                 (input)="filterStateProvince()"
+                 [maxLength]="50">
+          <mat-autocomplete requireSelection #auto1="matAutocomplete">
+            @for (option of filteredState(); track option) {
+              <mat-option [value]="option[1]">{{ option[1] }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+              
+        <mat-form-field class="example-full-width">
+          <mat-label>Postal Code</mat-label>
+          <input type="text" matInput formControlName="postalCode" [maxLength]="10">
+        </mat-form-field> -->
+
+        <button mat-raised-button 
+        type="submit" 
+        class="submit m-4" 
+        (click)="saveChanges()"> Save Changes </button>
+      </form>
+    </div>
+</div>

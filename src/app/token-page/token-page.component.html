@@ -1,0 +1,47 @@
+
+<app-navbar class="w-full"></app-navbar>
+
+@if(this.loading != null && this.loading()) {
+  <div class="w-full h-full flex justify-center items-center">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+} @else if(this.isUserChangingPassword || this.isUserMigrating) {
+  <div class="relative top-4">
+    <h1 class="text-center  font-semibold text-3xl text-slate-950 self-start my-2">Change your password</h1>
+    <div class="w-full flex flex-col justify-center items-center" >
+      <form class="w-[300px] flex flex-col justify-center ">
+            
+        <mat-form-field class="w-full">
+          <mat-label>Password</mat-label>
+          <input  [(ngModel)]="password" name="password"  [formControl]="passwordFormControl" [errorStateMatcher]="passwordMatcher" matInput [type]="hide() ? 'password' : 'text'"/>
+          @let error = passwordFormControl.getError('passwordStrength');
+          @if (passwordFormControl.hasError('required')) {
+            <mat-error>Password is <strong>required</strong></mat-error>
+          } @else if(error) {
+            <mat-error>{{error[0]}}</mat-error>  
+          }
+  
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="swapHide($event)"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide()"
+          >
+            <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+  
+        <button mat-raised-button class="submit m-4" (click)="isUserChangingPassword ? changePassword() : migrateUser()">Change Password</button>
+      </form>
+    </div>
+  </div>
+} @else {
+  <div class="relative top-4 h-full flex flex-col justify-center items-center">
+    <h1 class="font-semibold text-3xl text-slate-950 my-2">Email validation</h1>
+    <h2 class="">{{this.resultText()}}</h2>
+  </div>
+}
+
+
+
