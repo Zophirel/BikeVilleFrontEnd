@@ -16,6 +16,7 @@ export class Product {
   modifiedDate: Date | null;
   productCategory: any | null;
   productModel: any | null; 
+  largePhoto: String;
 
   static orderByProp = ['Name', 'Price', 'Size', 'Weight', 'Newer'];
 
@@ -37,6 +38,7 @@ export class Product {
     this.modifiedDate = data.modifiedDate ?? null;
     this.productCategory = data.productCategory ?? null;
     this.productModel = data.productModel ?? null;
+    this.largePhoto = data.largePhoto ?? '';
   }
 
   static fromJson(json: string): Product {
@@ -59,6 +61,7 @@ export class Product {
       modifiedDate: data.modifiedDate,
       productCategory: data.productCategory,
       productModel: data.productModel,
+      largePhoto: data.largePhoto,
     });
   }
 }

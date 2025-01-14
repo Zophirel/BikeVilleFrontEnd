@@ -63,19 +63,34 @@ export class ProductComponent implements OnInit {
       }
     });
   }
-  
+  /*
   addToCart(): void {
     if (this.product) {
       const userId = this.authService.getIdToken(); // Ottieni l'ID dell'utente dal token
       if (userId) {
-        this.cartService.addProductToCart(this.product.productId, userId); // Aggiungi prodotto e ID utente al carrello
-        console.log('Prodotti nel carrello:', this.cartService.getCartProducts());
+        // Passiamo tutte le proprietà richieste
+        const productDetails = {
+          productId: this.product.productId,
+          userId: userId,
+          name: this.product.name,
+          largePhoto: this.product.largePhoto,
+          price: this.product.listPrice
+        };
+  
+        this.cartService.addProductToCart(productDetails).subscribe(
+          response => {
+            console.log('Prodotto aggiunto al carrello:', response);
+          },
+          error => {
+            console.error('Errore durante l\'aggiunta del prodotto al carrello:', error);
+          }
+        );
       } else {
         console.log('Utente non autenticato');
       }
     }
   }
-
+  */
   fetchProductAndGroupAttributes(productId: number): void {
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
