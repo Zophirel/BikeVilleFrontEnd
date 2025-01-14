@@ -1,25 +1,49 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
-export interface UserUpdateData {
-  title?: string;
-  name?: string;
-  middle?: string;
-  surname?: string;
-  email?: string;
-  phone?: string;
-  company?: string;
-}
-
-export interface UserUpdateAddress {
+export class UserAddress {
+  id?: string;
   addressLine1?: string;
-  addressLine2?: string; 
+  addressLine2?: string;
   city?: string;
   country?: string;
   state?: string;
   postalCode?: string;
+
+  constructor(id: string, address1: string, address2: string, city: string, country: string, state: string, postalCode: string) {
+    this.id = id;
+    this.addressLine1 = address1;
+    this.addressLine2 = address2;
+    this.city = city;
+    this.country = country;
+    this.state = state;
+    this.postalCode = postalCode;
+  }
 }
+
+export class UserData {
+  id?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  country?: string;
+  state?: string;
+  postalCode?: string;
+
+  constructor(id: string, address1: string, address2: string, city: string, country: string, state: string, postalCode: string) {
+    this.id = id;
+    this.addressLine1 = address1;
+    this.addressLine2 = address2;
+    this.city = city;
+    this.country = country;
+    this.state = state;
+    this.postalCode = postalCode;
+  }
+}
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +51,9 @@ export interface UserUpdateAddress {
 
 export class UserDataService {
   private http = inject(HttpClient);
-  // private customerUrl = 'https://zophirel.it/api/Customer'; 
   private customerUrl = "https://zophirel.it/api/Customer"; 
-  private addressUrl = 'https://zophirel.it/api/Address'; 
+  private addressCustomerUrl = `${environment.BASE_URL}/api/CustomerAddress`; 
+  private addressUrl = `${environment.BASE_URL}/api/Address`;
 
   getUserData(userId: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -37,10 +61,29 @@ export class UserDataService {
       'Authorization': `Bearer ${this.getToken()}`
     });
     console.log("MAYBE");
-    return this.http.get(`${this.customerUrl}/${userId}`, { headers });
+    
+    return this.http.get(`${this.customerUrl}/29485`, { headers });
   }
 
-  updateUserData(userData: UserUpdateData, userId: string): Observable<any> {
+  getUserAddress(userId: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getToken()}`
+    });
+  
+    return this.http.get(`${this.addressCustomerUrl}/29485`,{ headers });
+  }
+
+  getAddress(id: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getToken()}`
+    });
+      
+    return this.http.get(`${this.addressUrl}/${id}`, { headers });
+  }
+  
+  updateUserData(userData: UserAddress, userId: string): Observable<any> {
     const headers = new HttpHeaders({
            'Content-Type': 'application/json',
            'Authorization': `Bearer ${this.getToken()}`
@@ -49,14 +92,13 @@ export class UserDataService {
     return this.http.patch(url, userData,  { headers }); // Effettua la chiamata PATCH
   }
 
-  getUserAddress(userId: string): Observable<any> {
+  updateUserAddress(userData: UserAddress, userId: string): Observable<any> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.getToken()}`
-    });
-    console.log("eccoci");
-    //return this.http.get(`${this.addressUrl}/${userId}`,{ headers });
-    return this.http.get(`${this.addressUrl}/29485`,{ headers });
+           'Content-Type': 'application/json',
+           'Authorization': `Bearer ${this.getToken()}`
+         });
+    const url = `${this.customerUrl}/${userId}`; 
+    return this.http.patch(url, userData,  { headers }); // Effettua la chiamata PATCH
   }
 
   private getToken(): string | null {

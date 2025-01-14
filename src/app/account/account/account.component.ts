@@ -7,6 +7,7 @@ import { AuthGoogleService } from '../../services/auth/google.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ChangeComponent } from '../change/change.component';
+import { UserDataService } from '../../services/custumer/custumer.service';
 
 @Component({
   selector: 'app-account',
@@ -16,12 +17,19 @@ import { ChangeComponent } from '../change/change.component';
   styleUrl: './account.component.css'
 })
 
+
 export class AccountComponent implements OnInit{
   private googleService = inject(AuthGoogleService);
   private router = inject(Router);  
   private tokens = localStorage.getItem('auth');
   data: any; //prova
-  
+  address1: any; // contiene la prima riga di indirizzo
+  address2: any; // contiene la seconda riga dell'indirizzo
+  country: any; // contiene il paese
+  city: any; // contiene la città
+  userAddress: any[] = []; // contiene il risultato get USER - ADDRESS
+  addressFinal: any; // contiene il risultato get ADDRESS
+
   isDropdownOpen = false; // Stato che indica se il dropdown è aperto o chiuso
   images: string[] = [
     "https://bikeville.s3.cubbit.eu/images/account/greater-than.png",
@@ -29,7 +37,7 @@ export class AccountComponent implements OnInit{
   ];
 
   currentArrow: string = this.images[0];
-  constructor(private http: HttpClient){
+  constructor(private http: HttpClient, private userDataService: UserDataService){
     console.log(this.getTokenData(this.getIdToken()));
   }
 
@@ -57,11 +65,56 @@ export class AccountComponent implements OnInit{
 
   ngOnInit(): void {
     this.data = this.getTokenData(this.getIdToken());
+
+    this.userDataService.getUserAddress(this.data.nameid).subscribe({
+      next: (response) => {
+        this.userAddress = response;
+        this.userDataService.getAddress(this.userAddress[0].addressId).subscribe({
+          next: (response) => {
+            this.addressFinal = response;
+            console.log(this.addressFinal);
+            this.address1 = this.addressFinal.addressLine1;
+            this.address2 = this.addressFinal.addressLine2;
+            this.city = this.addressFinal.city;
+            this.country = this.addressFinal.countryRegion;
+          },
+          error: (error) => {
+            let errorMessage = 'An error occurred in getAddress';
+            console.log(error);
+    
+            if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+          }
+        });
+
+      },
+      error: (error) => {
+        let errorMessage = 'An error occurred in getUserAddress';
+        console.log(error);
+
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+      }
+    });
   }
 
   changeProfile() {
     // this.change.changeProfile(this.data.sid);
     this.router.navigateByUrl('/change');
+  }
+
+  changeFaqs(){
+    this.router.navigateByUrl('/faq');
+  }
+
+  changeAbout(){
+    this.router.navigateByUrl('/about');
+  }
+
+  changePrivacy(){
+    this.router.navigateByUrl('/privacy');
   }
 
   // Funzione per aprire o chiudere il dropdown
