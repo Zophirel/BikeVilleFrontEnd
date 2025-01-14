@@ -1,71 +1,71 @@
 <app-navbar></app-navbar>
-<ng-template #noImage>
-  <p class="text-gray-500 text-lg">Immagine non disponibile</p>
-</ng-template>
 
-<div *ngIf="product; else noProduct" class="flex flex-col p-6 bg-gray-100 shadow-lg rounded-lg">
-  <!-- Immagine grande al centro -->
-  <img 
-    src="data:image/gif;base64,{{ product.thumbNailPhoto }}" 
-    class="w-full h-auto object-cover rounded-lg shadow-md" 
-    alt="Product Image"
-  />
+<div *ngIf="product;" class="container mt-6 mx-auto max-w-full px-5 sm:px-7 lg:px-10">
+  <!-- Card del Prodotto -->
+  <mat-card class="product-card shadow-lg flex flex-col lg:flex-row">
+    <!-- Immagine -->
+    <mat-card-header class="flex justify-center items-center w-full lg:w-5/5 p-4">
+      <div mat-card-avatar class="product-image-container w-full h-[30rem]">
+        <img
+          src="data:image/gif;base64,{{ product.thumbNailPhoto }}"
+          class="w-full h-full object-contain rounded-lg shadow-lg"
+          alt="Product Image"
+        />
+      </div>
+    </mat-card-header>
 
-  <!-- Informazioni del prodotto -->
-  <div class="flex-1 text-left my-6 px-4">
-    <h1 class="text-5xl font-extrabold text-gray-800 mb-4 shadow-sm">
-      {{ product.name || 'Nome non disponibile' }}
-    </h1>
-    <p class="mt-2 text-lg text-gray-700">
-      <strong>Codice Prodotto:</strong> {{ product.productNumber || 'N/A' }}
-    </p>
-    <p class="mt-2 text-lg text-gray-700">
-      <strong>Descrizione:</strong> {{ productDescription?.description || 'Descrizione non disponibile' }}
-    </p>
+    <!-- Descrizione -->
+    <mat-card-content class="lg:w-2/5 p-6 flex flex-col justify-start ml-6">
+      <div class="product-details">
+        <h2 class="product-name text-3xl font-semibold text-gray-800">{{ product.name }}</h2>
+        <p class="product-id text-lg text-gray-600 mt-2">ID Prodotto: {{ product.productNumber }}</p>
 
-    <!-- Menu a tendina per colore -->
-    <div *ngIf="product?.color" class="mt-4">
-      <label for="color-select" class="block text-lg font-semibold text-gray-700">Colore:</label>
-      <select id="color-select" class="mt-2 p-3 border border-gray-300 rounded-lg shadow-sm w-full focus:ring-2 focus:ring-yellow-500">
-        <option [value]="product.color">{{ product.color }}</option>
-      </select>
-    </div>
+        <!-- Colori -->
+        <div *ngIf="availableColors.length > 0" class="color-selection mt-4">
+          <mat-form-field appearance="fill" class="w-3/5 sm:w-2/4">
+            <mat-label>Seleziona Colore</mat-label>
+            <mat-select [(ngModel)]="selectedColor" (ngModelChange)="onColorChange(selectedColor)">
+              <mat-option *ngFor="let color of availableColors" [value]="color">{{ color }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-    <!-- Menu a tendina per taglia -->
-    <div *ngIf="product?.size" class="mt-4">
-      <label for="size-select" class="block text-lg font-semibold text-gray-700">Taglia:</label>
-      <select id="size-select" class="mt-2 p-3 border border-gray-300 rounded-lg shadow-sm w-full focus:ring-2 focus:ring-yellow-500">
-        <option [value]="product.size">{{ product.size }}</option>
-      </select>
-    </div>
+        <!-- Taglie -->
+        <div *ngIf="availableSizes.length > 0" class="size-selection mt-4">
+          <mat-form-field appearance="fill" class="w-3/5 sm:w-2/4">
+            <mat-label>Seleziona Taglia</mat-label>
+            <mat-select [(ngModel)]="selectedSize" (ngModelChange)="onSizeChange()" [disabled]="availableSizes.length === 0">
+              <mat-option *ngFor="let size of availableSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-    <!-- Prezzo -->
-    <p class="font-bold text-2xl text-yellow-600 mt-3 shadow-sm">
-      Prezzo: {{ product.listPrice || 0 | currency }}
-    </p>
-  </div>
+        <p class="product-price text-2xl font-bold text-yellow-700 mt-6">Prezzo: {{ product.listPrice | currency }}</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-  <!-- Bottone al centro per aggiungere al carrello -->
-  <div class="flex justify-center items-center my-6">
+  <!-- Azioni -->
+  <mat-card-actions class="justify-center mt-6 p-4">
     <button
-      mat-raised-button
-      color="accent"
-      class="px-14 py-4 bg-gray-900 text-white text-xl font-semibold rounded-lg shadow-lg hover:bg-yellow-500 hover:text-black transition-all duration-300 flex items-center"
-    >
+    mat-raised-button 
+    color="accent" 
+    class="add-to-cart-btn w-full sm:w-auto text-lg font-semibold" >
       <mat-icon class="mr-2">add_shopping_cart</mat-icon>
       Aggiungi al carrello
     </button>
-  </div>
-</div>
+  </mat-card-actions>
 
 <ng-template #noProduct>
-  <p class="text-gray-500 text-lg text-center">Dettagli del prodotto non disponibili.</p>
+  <p class="text-center text-gray-500 text-lg">Dettagli del prodotto non disponibili.</p>
 </ng-template>
 
 <!-- Prodotti correlati -->
-<div class="related-products my-8" *ngIf="categoryProducts.length > 0">
+<div *ngIf="relatedProductsSignal().size > 1" class="related-products mt-8">
+  <mat-divider></mat-divider>
+  <h2 class="text-3xl font-semibold text-gray-800 mb-6">Prodotti della stessa categoria</h2>
   <app-product-list
-    [homeProducts]="categoryProducts"
-    title="Prodotti correlati">
+    [searchProducts]="relatedProductsSignal()"
+    class="mt-5">
   </app-product-list>
 </div>
