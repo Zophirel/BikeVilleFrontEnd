@@ -90,7 +90,7 @@ export class ProductComponent implements OnInit {
       }
     }
   }
-*/
+  */
   fetchProductAndGroupAttributes(productId: number): void {
     this.productService.getProductById(productId).subscribe({
       next: (product) => {

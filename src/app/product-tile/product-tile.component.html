@@ -1,8 +1,9 @@
 <div id="w-44" (click)="navigateToProduct()">
-    <img class="object-cover h-[39vw] w-[39vw] max-w-[200px] max-h-[200px] rounded-xl" 
-         src="data:image/gif;base64,{{ this.product?.thumbNailPhoto }}" />
-  </div>
-  <div class="w-[39vw] max-w-[200px]">
-    <h1 class="mt-2 font-semibold text-wrap">{{ this.product?.name }}</h1>
-    <p class="text-sm opacity-70">${{ this.product?.listPrice }}</p>
-  </div>
+  <img class="object-cover h-[39vw] w-[39vw] max-w-[200px] max-h-[200px] rounded-xl" 
+       src="data:image/gif;base64,{{ this.product?.largePhoto }}" /> <!--CAMBIARE FOTO CON LARGE FOTO cambiare su product -->
+</div>
+<div class="w-[39vw] max-w-[200px]">
+  <h1 class="mt-2 font-semibold text-wrap">{{ this.product?.name }}</h1>
+  <p class="text-sm opacity-70">${{ this.product?.listPrice }}</p>
+</div>
+

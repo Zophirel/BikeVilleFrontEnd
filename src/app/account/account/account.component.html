@@ -9,7 +9,7 @@
                 <h3 class="ml-5">{{data.family_name}} {{data.unique_name}}</h3>
                 <p class="ml-8 text-sm">{{data.email}}</p>
                 <p class="ml-8 text-sm">{{data.Phone}}</p>
-                <p class="ml-8 text-sm">Shipping Address</p>
+                <p class="ml-8 text-sm">{{address1}}, {{city}}, {{country}}</p>
                 
                 <div class="ml-40">
                   <button class="text-sm bg-gray-200 border-1 border-gray rounded-full px-1" (click)="changeProfile()" >Edit Profile</button>
@@ -36,12 +36,12 @@
             </button>
             <img src="https://bikeville.s3.cubbit.eu/images/account/greater-than.png" alt="Foto freccia" class="object-cover h-6 w-6 mr-2">
         </div>
-        <div class="mt-5 border-2 rounded-full px-15 py-1 flex items-center justify-between">
+        <!-- <div class="mt-5 border-2 rounded-full px-15 py-1 flex items-center justify-between">
             <button>
                 <p class="ml-2">Wishlist</p>
             </button>
             <img src="https://bikeville.s3.cubbit.eu/images/account/greater-than.png" alt="Foto freccia" class="object-cover h-6 w-6 mr-2">
-        </div>
+        </div> -->
         <div>
         
 
@@ -54,7 +54,15 @@
           <!-- opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transform translate-y-2 transition-all duration-500 ease-in-out -->
         <div *ngIf="isDropdownOpen" id="dropdownMenu" class="px-15 py-3 ml-3 ">
                   <p href="#" class="border-2 rounded-full py-0.5 flex items-center justify-between text pl-3">Call XXX-XXX-XXXXX</p>
-                  <a routerLink="/faqs" class="mt-1 border-2 rounded-full py-0.5 flex items-center justify-between pl-3">Check FAQs</a>
+                  <p class="border-2 rounded-full py-0.5 flex items-center justify-between text pl-3 mt-2">
+                    <button (click)="changeFaqs()">Check FAQs</button>
+                  </p>
+                  <p class="border-2 rounded-full py-0.5 flex items-center justify-between text pl-3 mt-2">
+                    <button (click)="changePrivacy()" >Policy & Privacy</button>
+                  </p>
+                  <p class="border-2 rounded-full py-0.5 flex items-center justify-between text pl-3 mt-2">
+                    <button (click)="changeAbout()" >About</button>
+                  </p>
           </div>
         
         </div>
