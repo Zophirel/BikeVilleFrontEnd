@@ -78,10 +78,10 @@ export class ProductComponent implements OnInit {
         };
   
         this.cartService.addProductToCart(productDetails).subscribe(
-          response => {
+          (response: any) => { 
             console.log('Prodotto aggiunto al carrello:', response);
           },
-          error => {
+          (error: any) => { // Specifica anche il tipo di `error`
             console.error('Errore durante l\'aggiunta del prodotto al carrello:', error);
           }
         );
