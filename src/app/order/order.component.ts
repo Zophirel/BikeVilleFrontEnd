@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, Output } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { OrderDialog } from '../order-dialog/order-dialog.component';
 import { EmittedOrderValue } from '../filter-dialog/emitted-filter.module.';
 import { ProductCategory } from '../product/product-category.module';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-order',
@@ -16,13 +17,14 @@ import { ProductCategory } from '../product/product-category.module';
     templateUrl: './order.component.html',
     styleUrl: './order.component.scss'
 })
-export class OrderComponent {
+export class OrderComponent implements OnDestroy {
   
   readonly dialog = inject(MatDialog);
   @Input() category: ProductCategory | undefined;
   @Output() orderByEmitter = new EventEmitter<EmittedOrderValue>();
  
   orderData: EmittedOrderValue | undefined;
+  dialogSubscription: Subscription | null = null;
 
   openDialog(): void {
     this.orderData = new EmittedOrderValue(this.category!, null, true);
@@ -31,7 +33,7 @@ export class OrderComponent {
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.dialogSubscription = dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       console.log(result)
       if (result !== undefined) {
@@ -39,6 +41,10 @@ export class OrderComponent {
         this.orderByEmitter.emit(result);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.dialogSubscription?.unsubscribe();
   }
 
 }

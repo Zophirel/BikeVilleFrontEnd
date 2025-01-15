@@ -21,6 +21,7 @@ import { MessageStatus } from './Enums';
 import EmailMatcher from './models/EmailMatcher';
 import PasswordMatcher from './models/PasswordMatcher';
 import Country  from './models/Country';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -78,7 +79,13 @@ export class SignupComponent {
   private authService: AuthService;
   private _snackBar = inject(MatSnackBar);
   messageStatus: MessageStatus = MessageStatus.Info;
-   
+  
+  // async calls
+  private authWithGoogleSubscription: Subscription | null = null;
+  private signupSubscription: Subscription | null = null;
+  private getCountriesJsonSubscription: Subscription | null = null;  
+
+
   constructor(auth : AuthService, public googleService: AuthGoogleService){
     this.authService = auth;
     this.filteredCountries = this.options.slice();
@@ -92,7 +99,7 @@ export class SignupComponent {
       const idToken = this.googleService.getIdToken();
 
       if(idToken){
-        this.authService.authWithGoogle(idToken).subscribe({
+        this.authWithGoogleSubscription = this.authService.authWithGoogle(idToken).subscribe({
           next: (data) => {
             console.log('The next value is: ', data);
           },
@@ -134,7 +141,7 @@ export class SignupComponent {
     console.log(JSON.stringify(data));
 
     if (!this.email || !this.password || !this.name || !this.surname) return;  
-    this.authService.signUp(data).subscribe({
+    this.signupSubscription = this.authService.signUp(data).subscribe({
       next: (data) => {
         console.log('The next value is: ', data);
       },
@@ -155,10 +162,15 @@ export class SignupComponent {
   }
 
   ngOnInit() {
-
-    this.authService.getCountriesJson().subscribe((response) => { 
+    this.getCountriesJsonSubscription = this.authService.getCountriesJson().subscribe((response) => { 
       this.options = JSON.parse(response.body);
-    });
+    })
+  }
+
+  ngOnDestroy() {
+    this.authWithGoogleSubscription?.unsubscribe();
+    this.signupSubscription?.unsubscribe();
+    this.getCountriesJsonSubscription?.unsubscribe();
   }
 
   setStateProvince(country: string) : void {

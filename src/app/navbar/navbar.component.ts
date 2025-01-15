@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-navbar',
     imports: [RouterModule],
     templateUrl: './navbar.component.html',
-    styleUrl: './navbar.component.scss'
+    styleUrl: './navbar.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent {
   @Input() isStackedPage: boolean = false;

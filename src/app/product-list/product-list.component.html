@@ -1,6 +1,7 @@
 <div class="ctn  text-2xl font-bold mb-10">
-    <h1 class="text-center mt-10">{{this.title}}</h1>
+   
    @if(this.homeProducts){  
+    <h1 class="text-center mt-28">{{this.title}}</h1>
     <div class="flex flex-wrap justify-center gap-2 mt-5">
         <app-product-tile [product]="this.homeProducts[0]"></app-product-tile>
         <app-product-tile [product]="this.homeProducts[1]"></app-product-tile>

@@ -39,7 +39,8 @@ import { AuthService } from '../services/auth/auth-service.service';
     ProductListComponent],
 })
 export class ProductComponent implements OnInit {
-  product: Product | null = null; // Prodotto singolo
+  
+  product = signal<Product|null>(null); // Prodotto singolo
   categoryProducts: Product[] = []; // Prodotti della stessa categoria del prodotto selezionato
   availableColors: string[] = []; // Colori disponibili
   availableSizes: string[] = []; // Taglie disponibili per il colore selezionato
@@ -57,6 +58,7 @@ export class ProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
+      console.log('Parametri:', params);
       const productId = +params.get('id')!;
       if (!isNaN(productId)) {
         this.fetchProductAndGroupAttributes(productId);
@@ -94,7 +96,8 @@ export class ProductComponent implements OnInit {
   fetchProductAndGroupAttributes(productId: number): void {
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
-        this.product = product;
+  
+        this.product.set(product) ;
         this.loadCategoryProducts(product.productCategoryId);
       },
       error: (err) => console.error('Errore durante il caricamento del prodotto:', err),
@@ -104,6 +107,7 @@ export class ProductComponent implements OnInit {
   loadCategoryProducts(categoryId: number): void {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
+        
         const categoryProducts = products.filter(
           (product) => product.productCategoryId === categoryId
         );
@@ -166,7 +170,7 @@ export class ProductComponent implements OnInit {
       (product) => product.color === this.selectedColor && product.size === this.selectedSize
     );
     if (selectedProduct) {
-      this.product = selectedProduct; 
+      this.product.set(selectedProduct); 
     }
   }
 }
