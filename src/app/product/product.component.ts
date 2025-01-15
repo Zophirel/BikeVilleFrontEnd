@@ -110,6 +110,7 @@ export class ProductComponent implements OnInit {
   loadCategoryProducts(categoryId: number): void {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
+        
         const categoryProducts = products.filter(
           (product) => product.productCategoryId === categoryId
         );

@@ -28,7 +28,6 @@ export class ProductService {
     }, new Map<string, Product[]>());
   }
 
-
   getAllProductCategories(){
     return this.http.get<ProductCategory[]>('https://zophirel.it/api/productCategory')
   }
@@ -106,6 +105,4 @@ export class ProductService {
   
     return productsMap;
   }
-
-
 }

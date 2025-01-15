@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { OnInit } from '@angular/core';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, ViewChild} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth-service.service';
@@ -17,16 +17,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MessageStatus } from '../../auth/signup/Enums';
 import { UserDataService } from '../../services/custumer/custumer.service';
- 
+import { UserAddress } from '../../services/custumer/custumer.service';
+
 @Component({
   selector: 'app-change',
   imports: [
-    RouterModule, 
-    CommonModule, 
-    FormsModule, 
+    RouterModule,
+    CommonModule,
+    FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule, 
-    MatInputModule, 
+    MatFormFieldModule,
+    MatInputModule,
     NavbarComponent,
     MatButtonModule,
     MatIconModule,
@@ -41,17 +42,21 @@ import { UserDataService } from '../../services/custumer/custumer.service';
 export class ChangeComponent implements OnInit {
   @ViewChild('inputCountry') inputCountry: ElementRef<HTMLInputElement> | undefined;
   @ViewChild('inputState') inputState: ElementRef<HTMLInputElement> | undefined;
-  
+
   router = inject(Router);
   changeForm: FormGroup;
-  
+
   options: Country[] = [];
   filteredCountries: Country[];
-  filteredState = signal<[string, string][]>([]); 
-  
+  filteredState = signal<[string, string][]>([]);
+
   loading = signal(false);
   profile = signal(null);
   data: any;
+  userAddress: any[] = []; // contiene il risultato get USER - ADDRESS
+  addressFinal: any; // contiene il risultato get ADDRESS
+  addressClass!: UserAddress; // classe con i dati dell'indirizzo 
+  addressType: string = "";
 
   private authService: AuthService;
   private _snackBar = inject(MatSnackBar);
@@ -61,7 +66,7 @@ export class ChangeComponent implements OnInit {
   constructor(auth: AuthService, private userDataService: UserDataService) {
     this.authService = auth;
     this.filteredCountries = this.options.slice();
-    
+
     this.changeForm = this.fb.group({
       title: [''],
       name: ['', Validators.required],
@@ -72,27 +77,28 @@ export class ChangeComponent implements OnInit {
       company: ['', Validators.required],
       addressLine1: ['', Validators.required],
       addressLine2: [''],
+      addressType: ['', Validators.required],
       city: ['', Validators.required],
       country: ['', Validators.required],
       state: ['', Validators.required],
       postalCode: ['', Validators.required]
     });
 
-    if(this.router.url.includes('state')) {
+    if (this.router.url.includes('state')) {
       this.loading.set(true);
     }
 
-    this.authService.getCountriesJson().subscribe((response) => { 
+    this.authService.getCountriesJson().subscribe((response) => {
       this.options = JSON.parse(response.body);
     });
   }
 
   getIdToken() {
     let tokens = localStorage.getItem('auth');
-    if(tokens) {
+    if (tokens) {
       let auth = JSON.parse(tokens);
       return auth[0];
-    } 
+    }
     return null;
   }
 
@@ -102,7 +108,7 @@ export class ChangeComponent implements OnInit {
     return JSON.parse(decodedData);
   }
 
-  initializeFormData() {     
+  initializeFormData() {
     this.changeForm.patchValue({
       title: this.data.title || '',
       name: this.data.name || this.data.unique_name || '',
@@ -110,13 +116,18 @@ export class ChangeComponent implements OnInit {
       surname: this.data.family_name || '',
       email: this.data.email || '',
       phone: this.data.Phone || '',
-      company: this.data.Company || '',
-      addressLine1: this.data.address_line1 || '',
-      addressLine2: this.data.address_line2 || '',
-      city: this.data.city || '',
-      country: this.data.country || '',
-      state: this.data.state || '',
-      postalCode: this.data.postal_code || ''
+      company: this.data.Company || ''
+    });
+  }
+
+  initializeFormAddress() {
+    this.changeForm.patchValue({
+      addressLine1: this.addressClass.addressLine1 || '',
+      addressLine2: this.addressClass.addressLine2 || '',
+      city: this.addressClass.city || '',
+      country: this.addressClass.country || '',
+      state: this.addressClass.state || '',
+      postalCode: this.addressClass.postalCode || ''
     });
 
     if (this.changeForm.get('country')?.value) {
@@ -127,12 +138,50 @@ export class ChangeComponent implements OnInit {
     }
   }
 
-  // function to autocomplete the form with the gived data
+  initializeFormAddressType(dato: string) {
+    this.changeForm.patchValue({
+      addressType: dato || '',
+    });
+  }
+  // function to autocomplete the form with the given data
   ngOnInit(): void {
     const token = this.getIdToken();
     if (token) {
       this.data = this.getTokenData(token);
       this.initializeFormData();
+
+      this.userDataService.getUserAddress(this.data.nameid).subscribe({
+        next: (response) => {
+          this.userAddress = response;
+          this.addressType = this.userAddress[0].addressType;
+          this.initializeFormAddressType(this.addressType);
+
+          this.userDataService.getAddress(this.userAddress[0].addressId).subscribe({
+            next: (response) => {
+              const r = response;
+              this.addressClass = new UserAddress(r.addressId, r.addressLine1, r.addressLine2, r.city, r.countryRegion, r.stateProvince, r.postalCode);
+              this.initializeFormAddress();
+            },
+            error: (error) => {
+              let errorMessage = 'An error occurred in getAddress';
+              console.log(error);
+
+              if (error.error?.message) {
+                errorMessage = error.error.message;
+              }
+            }
+          });
+
+        },
+        error: (error) => {
+          let errorMessage = 'An error occurred in 164';
+          console.log(error);
+
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          }
+        }
+      });
     }
   }
 
@@ -141,14 +190,14 @@ export class ChangeComponent implements OnInit {
     const countryData = countries[country];
     if (countryData && countryData.divisions) {
       let entries = Object.entries<string>(countryData.divisions);
-      
+
       entries = entries.filter(([key]) => {
         return Number.isNaN(parseInt(key.split("-")[1]));
       });
 
       entries.sort((a, b) => {
-        if(a[1] < b[1]) { return -1; }
-        if(a[1] > b[1]) { return 1; }
+        if (a[1] < b[1]) { return -1; }
+        if (a[1] > b[1]) { return 1; }
         return 0;
       });
 
@@ -160,32 +209,32 @@ export class ChangeComponent implements OnInit {
   filterCountry(): void {
     if (!this.inputCountry) return;
 
-    if(this.inputState && this.inputState.nativeElement.value != "") {
+    if (this.inputState && this.inputState.nativeElement.value != "") {
       this.inputState.nativeElement.value = "";
       this.changeForm.get('state')?.setValue("");
     }
 
     const filterValue = this.inputCountry.nativeElement.value.toLowerCase();
-    this.filteredCountries = this.options.filter(o => 
+    this.filteredCountries = this.options.filter(o =>
       o.name.toLowerCase().includes(filterValue)
     );
   }
 
   filterStateProvince(): void {
     if (!this.inputState) return;
-    
+
     const filterValue = this.inputState.nativeElement.value.toLowerCase();
     this.filteredState.set(
-      this.filteredState().filter(o => 
+      this.filteredState().filter(o =>
         o[1].toLowerCase().includes(filterValue)
       )
     );
   }
 
-  
+
   saveChanges() {
     console.log("ciao");
-    //if (this.changeForm.valid) {
+    if (this.changeForm.valid) {
       console.log("ciao2");
       const userData = {
         title: this.changeForm.get('title')?.value,
@@ -199,6 +248,7 @@ export class ChangeComponent implements OnInit {
       console.log(userData);
 
       const userAddress = {
+        id: this.addressClass.id,
         addressLine1: this.changeForm.get('addressLine1')?.value,
         addressLine2: this.changeForm.get('addressLine2')?.value,
         city: this.changeForm.get('city')?.value,
@@ -206,6 +256,7 @@ export class ChangeComponent implements OnInit {
         state: this.changeForm.get('state')?.value,
         postalCode: this.changeForm.get('postalCode')?.value
       }
+      console.log(userAddress);
 
       // this.userDataService.updateUserData(userData, this.data.nameid).subscribe({
       //   next: (response) => {
@@ -225,7 +276,7 @@ export class ChangeComponent implements OnInit {
       //     if (error.error?.message) {
       //       errorMessage = error.error.message;
       //     }
-          
+
       //     this._snackBar.open(errorMessage, 'Close', {
       //       duration: 5000,
       //       horizontalPosition: 'end',
@@ -237,7 +288,9 @@ export class ChangeComponent implements OnInit {
 
       this.userDataService.getUserAddress(this.data.nameid).subscribe({
         next: (response) => {
-          console.log("weeeeee");
+          this.userAddress = response;
+          console.log(this.userAddress[0].addressId);
+
           this._snackBar.open('Your data has been successfully updated', 'Close', {
             duration: 3000,
             horizontalPosition: 'end',
@@ -248,10 +301,11 @@ export class ChangeComponent implements OnInit {
         error: (error) => {
           let errorMessage = 'An error occurred while updating your data';
           console.log(error);
+
           if (error.error?.message) {
             errorMessage = error.error.message;
           }
-          
+
           this._snackBar.open(errorMessage, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
@@ -262,34 +316,29 @@ export class ChangeComponent implements OnInit {
       });
 
 
-    //} 
-    // else {
-    //   // Marca tutti i campi come touched per mostrare gli errori
-    //   console.log("maleee");
-    //   Object.keys(this.changeForm.controls).forEach(key => {
-    //     const control = this.changeForm.get(key);
-    //     if (control) {
-    //       control.markAsTouched();
-    //     }
-    //   });
-
-      // this._snackBar.open('Please fill in all required fields correctly', 'Close', {
-      //   duration: 5000,
-      //   horizontalPosition: 'end',
-      //   verticalPosition: 'top',
-      //   panelClass: ['warning-snackbar']
-      // });
-    //}
     }
+    else {
+      // Marca tutti i campi come touched per mostrare gli errori
+      console.log("maleee");
+      Object.keys(this.changeForm.controls).forEach(key => {
+        const control = this.changeForm.get(key);
+        if (control) {
+          control.markAsTouched();
+        }
+      });
 
-  // Aggiungi questo metodo per gestire il loading state nel template
-  // saveInProgress(): boolean {
-  //   console.log(this.loading);
-  //   return this.loading();
-  // }
+      this._snackBar.open('Please fill in all required fields correctly', 'Close', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['warning-snackbar']
+      });
+    }
+  }
 
 }
 
 class Country {
-  constructor(public name: string, public code: string) {}
+  constructor(public name: string, public code: string) { }
 }
+

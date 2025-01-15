@@ -19,7 +19,8 @@
       <div class="product-details">
         <h2 class="product-name text-3xl font-semibold text-gray-800">{{ product()?.name }}</h2>
         <p class="product-id text-lg text-gray-600 mt-2">ID Prodotto: {{ product()?.productNumber }}</p>
-     <!-- <p class="product-id text-lg text-gray-600 mt-2">Descrizione: {{ product()?.description || 'Descrizione non disponibile' }}</p>  --> 
+      <p class="product-id text-lg text-gray-600 mt-2">Descrizione: {{ product()?.description || 'Descrizione non disponibile' }}</p>  
+
 
         <!-- Colori -->
         <div *ngIf="availableColors.length > 0" class="color-selection mt-4">

@@ -5,7 +5,7 @@ export const routes: Routes = [
     {path: 'home', loadComponent: () => import('./home/home.component').then(m => m.HomeComponent), data: {animation: "HomePage"}},
     {path: 'account', loadComponent: () => import('./account/account/account.component').then(m => m.AccountComponent), data: {animation: "AccountPage"}},
     {path: 'about', loadComponent: () => import('./account/about/about.component').then(m => m.AboutComponent), data: {animation: "AboutPage"}},
-    {path: 'faq', loadComponent: () => import('./account/faqs/faqs.component').then(m => m.FaqsComponent), data: {animation: "FaqPage"}},
+    {path: 'faq', loadComponent: () => import('./account/faqs/faqs.component').then(m => m.FaqsComponent), data: {animation: "FaqsPage"}},
     {path: 'cart', loadComponent: () => import('./cart/cart.component').then(m => m.CartComponent), data: {animation: "CartPage"}},
     {path: 'checkout', loadComponent: () => import('./checkout/checkout.component').then(m => m.CheckoutComponent), data: {animation: "CheckOutPage"}},
     {path: 'privacy', loadComponent: () => import('./privacypolicy/privacypolicy.component').then(m => m.PrivacypolicyComponent), data: {animation: "PrivacyPage"}},

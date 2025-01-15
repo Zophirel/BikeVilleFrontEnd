@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit, Signal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injectable, OnDestroy, OnInit, Signal, signal } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ProductListComponent } from '../product-list/product-list.component';
@@ -8,10 +8,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { ProductService } from '../services/products/product.service';
 import { ProductCategory } from '../product/product-category.module';
 import { Product } from '../product/product.module';
-import { map, switchMap } from 'rxjs';
+import { map, Subscription, switchMap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { EmittedFilterValue, EmittedOrderValue } from '../filter-dialog/emitted-filter.module.';
 import { RouterModule } from '@angular/router';
+import { CacheService } from '../services/cache/cache.service';
 
 @Component({
     selector: 'app-search',
@@ -26,61 +27,95 @@ import { RouterModule } from '@angular/router';
         RouterModule
     ],
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss']
+    styleUrls: ['./search.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @Injectable({ providedIn: 'root' })
 
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
 
   tabSelectedIndex: number = 0;
-  allCategories: Map<ProductCategory, ProductCategory[]> = new Map();
+  allCategories: Map<ProductCategory, ProductCategory[]> | undefined = new Map();
   categories: ProductCategory[] = [];
   currentCategory: ProductCategory | undefined; 
   allProducts: Map<string, Product[]> = new Map();
   productsByCategory: Map<ProductCategory, Map<string, Product[]>> = new Map();
   productsByCategoryCopy: Map<ProductCategory, Map<string, Product[]>> = new Map();
   productDataSignal = signal<Map<ProductCategory, Map<string, Product[]>>>(new Map());
+  getAllProductCatoriesSubscription: Subscription | null = null;  
 
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService, private cacheService: CacheService) { }
 
   ngOnInit(): void {
-    this.productService.getAllProductCategories().pipe(
+    const cachedProductsByCategoryCopy = this.cacheService.get<Map<any, any>>('productsByCategoryCopy');
+    const cachedAllProducts = this.cacheService.get<Map<string, Product[]>>('allProducts');
+    const cachedAllCategories = this.cacheService.get<Map<ProductCategory, ProductCategory[]>>('allCategories');
+  
+    if (cachedProductsByCategoryCopy && cachedAllProducts && cachedAllCategories) {
+      console.log("using chached data");
+      // Use cached data
+      this.productsByCategoryCopy = cachedProductsByCategoryCopy;
+      this.productsByCategory = this.productsByCategoryCopy;
+      this.allProducts = cachedAllProducts;
+      this.allCategories = cachedAllCategories;
+      this.categories = Array.from(this.allCategories.keys());
+      this.currentCategory = this.categories[0];
+      
+      this.productDataSignal.set(this.productsByCategoryCopy);
+      console.log('Cached data:', this.productDataSignal());
+      return;
+    }
+  
+    // Fetch and process data if not cached
+    this.getAllProductCatoriesSubscription = this.productService.getAllProductCategories().pipe(
       switchMap(categories => {
+        console.log("making request");
         this.allCategories = this.productService.organizeCategories(categories);
+        this.cacheService.set('allCategories', this.allCategories);
+
         return this.productService.getAllProducts().pipe(
           map(products => {
-           
-            this.allProducts = this.productService.organizeProducts(products);
-            this.productsByCategory = this.productService.bindProductToCategory(this.allProducts, this.allCategories);
-
-            this.productsByCategoryCopy = this.productsByCategory;
-            this.productDataSignal.set(this.productsByCategory);
-            console.log(this.productDataSignal())
-            
-            this.categories = Array.from(this.allCategories.keys());
-
+            if(this.allCategories){
+              this.allProducts = this.productService.organizeProducts(products);
+              this.productsByCategory = this.productService.bindProductToCategory(this.allProducts, this.allCategories);
+    
+              this.productsByCategoryCopy = this.productsByCategory;
+              this.productDataSignal.set(this.productsByCategory);
+              console.log(this.productDataSignal());
+    
+              this.categories = Array.from(this.allCategories.keys());
+              console.log('Fetched data:', this.categories);
+    
+              // Cache the processed data
+              this.cacheService.set('productsByCategoryCopy', this.productsByCategoryCopy);
+              this.cacheService.set('allProducts', this.allProducts);
+            }
           })
         );
       })
     ).subscribe();
   }
 
+  ngOnDestroy(): void {
+    this.getAllProductCatoriesSubscription?.unsubscribe();
+  }
+  
+
   selectTab(index: number): void {
     this.currentCategory = this.categories[index];
   }
 
   search(event: Event): void {
-
     const query = (event.target as HTMLInputElement).value;    
     this.productsByCategory = new Map(this.productsByCategoryCopy);
-    this.productDataSignal.set( this.productsByCategory);
+    this.productDataSignal.set(this.productsByCategory);
 
     if (!query.trim()) return // Return the original map if the query is empty
     
     const searchResults = new Map<string, Product[]>();
     const lowerCaseQuery = query.toLowerCase();  
     const currentProducts = this.productsByCategory.get(this.currentCategory!);
-
+    console.log(this.currentCategory)
     if(currentProducts != undefined){
 
       for (const [key, productList] of currentProducts) {
@@ -95,7 +130,6 @@ export class SearchComponent implements OnInit {
     }
   }
   
-
   // Abstracted filtering logic
   private filterProducts(category: ProductCategory, subCategoryIds: string[]): Map<string, Product[]> {
     const selectedProducts = this.productsByCategory.get(category);

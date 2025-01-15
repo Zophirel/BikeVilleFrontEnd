@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -23,7 +23,8 @@ import {EmittedFilterValue} from './emitted-filter.module.';
     MatChipsModule,
   ],
   templateUrl: './filter-dialog.component.html',
-  styleUrl: './filter-dialog.component.scss'
+  styleUrl: './filter-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class FilterDialog {
