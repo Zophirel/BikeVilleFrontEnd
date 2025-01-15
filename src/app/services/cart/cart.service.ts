@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { SalesOrderDetail } from '../../models/sales-order-detail.model';
 import { SalesOrderHeader } from '../../models/sales-order-header.model';
 import { environment } from '../../../environments/environment';
+import { ProductCart } from '../../models/product-cart.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class CartService {
     this.cartItemsSubject.next(items);
   }
 
-  getNumberOfItems(){
+  getNumberOfItems() {
     return this.cartItemsSubject.value.length;
   }
 
@@ -56,14 +57,21 @@ export class CartService {
     return this.shipToAddressId;
   }
 
+  getHeaders(): HttpHeaders{
+    const token = localStorage.getItem('auth');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+  getOrderHeader(headers: HttpHeaders, customerId: string): Observable<SalesOrderHeader> {
+    const orderHeaderByCustomerUrl = `${this.apiUrlSalesOrderHeader}/Customer/${customerId}`; // get details di un customer a caso
+    return this.http.get<SalesOrderHeader>(orderHeaderByCustomerUrl, { headers });
+  }
+
   // Nuovi metodi per le operazioni CRUD
   getCartItems(): Observable<SalesOrderDetail[]> {
-    const token = localStorage.getItem('auth');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getHeaders();
 
-    const orderHeaderByCustomerUrl = `${this.apiUrlSalesOrderHeader}/Customer/30089`; // get details di un customer a caso
-    
-    return this.http.get<SalesOrderHeader>(orderHeaderByCustomerUrl, { headers }).pipe(
+    return this.getOrderHeader(headers, '30089').pipe(
       // switchMap allows us to return a new observable (the second HTTP request)
       switchMap((orderHeader: SalesOrderHeader) => {
         this.shipToAddressId = orderHeader.shipToAddressId
@@ -78,9 +86,9 @@ export class CartService {
   // Aggiorna il carrello locale
   updateCartItems(items: SalesOrderDetail[], updatedItem: SalesOrderDetail) {
     const changedItem = items.find(item => item.salesOrderId === updatedItem.salesOrderId && item.salesOrderDetailId === updatedItem.salesOrderDetailId);
-    
-    if(!changedItem) return;
- 
+
+    if (!changedItem) return;
+
     changedItem.orderQty = updatedItem.orderQty;
     changedItem.lineTotal = changedItem.unitPrice * updatedItem.orderQty * (1 - changedItem.unitPriceDiscount);
 
@@ -94,16 +102,14 @@ export class CartService {
 
   // Rimuovi un item dal carrello utilizzando salesOrderId e salesOrderDetailId
   removeFromCart(salesOrderId: number, salesOrderDetailId: number): Observable<any> {
-    const token = localStorage.getItem('auth');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getHeaders();
     const url = `${this.apiUrlSalesOrderDetail}/${salesOrderId}/${salesOrderDetailId}`;
     return this.http.delete(url, { headers });
   }
 
   // Aggiorna la quantità di un item
   updateItemQuantity(salesOrderId: number, salesOrderDetailId: number, quantity: number): Observable<SalesOrderDetail> {
-    const token = localStorage.getItem('auth');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getHeaders();
 
     const updatedItem = {
       orderQty: quantity,
@@ -115,5 +121,59 @@ export class CartService {
   // Ottieni gli items correnti del carrello
   getCurrentCartItems(): SalesOrderDetail[] {
     return this.cartItemsSubject.value;
+  }
+
+  addProductToCart(productDetails: ProductCart): Observable<any> {
+    const headers = this.getHeaders();
+
+    return this.getCartItems().pipe(
+      switchMap((cartItems) => {
+        const existingItem = cartItems.find(item => item.productId === productDetails.productId);
+
+        if (existingItem) {
+          // se il prodotto esiste nel carrello, aggiorna la quantità
+          existingItem.orderQty += 1;
+          existingItem.lineTotal = existingItem.unitPrice * existingItem.orderQty * (1 - existingItem.unitPriceDiscount);
+
+          return this.http.put<any>(`${this.apiUrlSalesOrderDetail}/${existingItem.salesOrderId}/${existingItem.salesOrderDetailId}`, existingItem, { headers });
+        } else {
+          return this.getOrderHeader(headers, '30089').pipe(
+            switchMap((orderHeader) => {
+              if(orderHeader){
+                return this.postProduct(headers, productDetails, orderHeader.salesOrderId);
+              }
+              else{
+                return this.http.post<any>(`${this.apiUrlSalesOrderHeader}`, {
+                  salesOrderId: this.generateGuid() 
+                }).pipe(
+                  switchMap((newOrderHeader) => this.postProduct(headers, productDetails, newOrderHeader.id))
+                );
+              }
+            })
+          )
+        }
+      })
+    );
+  }
+
+  postProduct(headers: HttpHeaders, productDetails: ProductCart, salesOrderId: string) : Observable<any>{
+    const newItem = {
+      productId: productDetails.productId,
+      salesOrderId,
+      orderQty: 1,
+      lineTotal: productDetails.price,
+      //rowguid: this.generateGuid(), // genera un GUID unico per l'item
+      modifiedDate: new Date()
+    };
+
+    return this.http.post<any>(this.apiUrlSalesOrderDetail, newItem, { headers });
+  }
+
+  generateGuid(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0,
+        v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 }
