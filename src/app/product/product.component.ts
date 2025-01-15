@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCard, MatCardContent,MatCardActions } from '@angular/material/card';
 import { CartService } from '../services/cart/cart.service';
 import { AuthService } from '../services/auth/auth-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product',
@@ -53,8 +54,9 @@ export class ProductComponent implements OnInit {
     private route: ActivatedRoute,
     private productService: ProductService,
     private cartService: CartService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private router: Router, //Router per cambiare programmaticamente la rotta.
+  ) {} 
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -72,23 +74,24 @@ export class ProductComponent implements OnInit {
       if (userId) {
         // Passiamo tutte le proprietà richieste
         const productDetails = {
-          productId: this.product.productId,
+          productId: this.product()?.productId,
           userId: userId,
-          name: this.product.name,
-          largePhoto: this.product.largePhoto,
-          price: this.product.listPrice
+          name: this.product()?.name,
+          largePhoto: this.product()?.largePhoto,
+          price: this.product()?.listPrice
         };
   
         this.cartService.addProductToCart(productDetails).subscribe(
-          (response: any) => { 
+          (response: any) => {
             console.log('Prodotto aggiunto al carrello:', response);
           },
-          (error: any) => { // Specifica anche il tipo di `error`
+          (error: any) => {
             console.error('Errore durante l\'aggiunta del prodotto al carrello:', error);
           }
         );
       } else {
-        console.log('Utente non autenticato');
+        console.log('Utente non autenticato. Reindirizzamento alla pagina di login.');
+        this.router.navigate(['/login']);
       }
     }
   }
