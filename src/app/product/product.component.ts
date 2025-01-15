@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCard, MatCardContent,MatCardActions } from '@angular/material/card';
 import { CartService } from '../services/cart/cart.service';
 import { AuthService } from '../services/auth/auth-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product',
@@ -39,7 +40,8 @@ import { AuthService } from '../services/auth/auth-service.service';
     ProductListComponent],
 })
 export class ProductComponent implements OnInit {
-  product: Product | null = null; // Prodotto singolo
+  
+  product = signal<Product|null>(null); // Prodotto singolo
   categoryProducts: Product[] = []; // Prodotti della stessa categoria del prodotto selezionato
   availableColors: string[] = []; // Colori disponibili
   availableSizes: string[] = []; // Taglie disponibili per il colore selezionato
@@ -52,11 +54,13 @@ export class ProductComponent implements OnInit {
     private route: ActivatedRoute,
     private productService: ProductService,
     private cartService: CartService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private router: Router, //Router per cambiare programmaticamente la rotta.
+  ) {} 
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
+      console.log('Parametri:', params);
       const productId = +params.get('id')!;
       if (!isNaN(productId)) {
         this.fetchProductAndGroupAttributes(productId);
@@ -70,31 +74,33 @@ export class ProductComponent implements OnInit {
       if (userId) {
         // Passiamo tutte le proprietà richieste
         const productDetails = {
-          productId: this.product.productId,
+          productId: this.product()?.productId,
           userId: userId,
-          name: this.product.name,
-          largePhoto: this.product.largePhoto,
-          price: this.product.listPrice
+          name: this.product()?.name,
+          largePhoto: this.product()?.largePhoto,
+          price: this.product()?.listPrice
         };
   
         this.cartService.addProductToCart(productDetails).subscribe(
-          (response: any) => { 
+          (response: any) => {
             console.log('Prodotto aggiunto al carrello:', response);
           },
-          (error: any) => { // Specifica anche il tipo di `error`
+          (error: any) => {
             console.error('Errore durante l\'aggiunta del prodotto al carrello:', error);
           }
         );
       } else {
-        console.log('Utente non autenticato');
+        console.log('Utente non autenticato. Reindirizzamento alla pagina di login.');
+        this.router.navigate(['/login']);
       }
     }
   }
-*/
+  */
   fetchProductAndGroupAttributes(productId: number): void {
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
-        this.product = product;
+  
+        this.product.set(product) ;
         this.loadCategoryProducts(product.productCategoryId);
       },
       error: (err) => console.error('Errore durante il caricamento del prodotto:', err),
@@ -166,7 +172,7 @@ export class ProductComponent implements OnInit {
       (product) => product.color === this.selectedColor && product.size === this.selectedSize
     );
     if (selectedProduct) {
-      this.product = selectedProduct; 
+      this.product.set(selectedProduct); 
     }
   }
 }
