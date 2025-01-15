@@ -18,6 +18,7 @@ import { MatCard, MatCardContent,MatCardActions } from '@angular/material/card';
 import { CartService } from '../services/cart/cart.service';
 import { AuthService } from '../services/auth/auth-service.service';
 import { Router } from '@angular/router';
+import { ProductCart } from '../models/product-cart.model';
 
 @Component({
   selector: 'app-product',
@@ -67,13 +68,13 @@ export class ProductComponent implements OnInit {
       }
     });
   }
-  /*
+  
   addToCart(): void {
     if (this.product) {
       const userId = this.authService.getIdToken(); // Ottieni l'ID dell'utente dal token
       if (userId) {
         // Passiamo tutte le proprietà richieste
-        const productDetails = {
+        const productDetails: ProductCart = {
           productId: this.product()?.productId,
           userId: userId,
           name: this.product()?.name,
@@ -95,7 +96,7 @@ export class ProductComponent implements OnInit {
       }
     }
   }
-  */
+  
   fetchProductAndGroupAttributes(productId: number): void {
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
