@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -22,7 +22,8 @@ import { EmittedOrderValue } from '../filter-dialog/emitted-filter.module.';
     MatSelectModule,
     FormsModule,
     CommonModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class OrderDialog implements OnInit {

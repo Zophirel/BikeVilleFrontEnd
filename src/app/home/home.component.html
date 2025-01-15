@@ -1,5 +1,5 @@
 <app-navbar></app-navbar>
-<app-slider class="sm:h-[68vh]"></app-slider>
+<app-slider [data]="homeProducts" class="sm:h-[68vh]"></app-slider>
 <app-product-list [homeProducts]="homeProducts" [searchProducts]="productsMapByCategory" title="Latest Arrivals"></app-product-list>
 
 <div class="p-3">
