@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Injectable, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Injectable, OnDestroy } from '@angular/core';
 import { ProductService } from '../services/products/product.service';
 import { Product } from '../product/product.module';
 import { ProductDescription } from '../services/product/product.model';
@@ -24,21 +24,25 @@ export class HomeComponent implements OnDestroy {
   productDescription: ProductDescription | null = null;
   getAllProductsSubscription: Subscription | null = null;
 
-  constructor(private productService: ProductService, private cacheService: CacheService) {
+  constructor(private productService: ProductService, private cacheService: CacheService, private cdRef: ChangeDetectorRef) {
     console.log(localStorage.getItem('auth'));
+    
+    if(this.cacheService.has('homeProducts')) {
+      console.log('Caricamento dei prodotti dalla cache');
+      this.homeProducts = this.cacheService.get('homeProducts')!;
+
+      return;
+    }
+
     this.loadProductsList();
   }
 
 
   loadProductsList(): void {
-    if(this.cacheService.has('homeProducts')) {
-      this.homeProducts = this.cacheService.get('homeProducts')!;
-      return;
-    }
+
 
     this.getAllProductsSubscription = this.productService.getAllProducts().subscribe({
       next: (products) => {
-        
         // Organize products by category
         this.productsMapByCategory = this.productService.organizeProductsByCategory(products);
 

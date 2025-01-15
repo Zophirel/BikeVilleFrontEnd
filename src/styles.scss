@@ -7,12 +7,11 @@
 @tailwind utilities;
 
 
-html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 html {
-    height: 100%;
+    height: fit-content;
     margin: 0;
     display: flex;
     justify-content: center;
@@ -38,6 +37,8 @@ app-forgot-password,
 app-filtler-dialog, 
 app-product,
 main, body {
+    height: fit-content;
+    display: block;
     height: 100%;
     width: 100%;
     .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::after {
