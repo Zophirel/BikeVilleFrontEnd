@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations'
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, CommonModule],
+    imports: [RouterOutlet, CommonModule, ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     animations: [
@@ -15,6 +15,7 @@ import { trigger, transition, style, animate } from '@angular/animations'
         ]),
       ]),
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent { 
   title = 'BikeVille';

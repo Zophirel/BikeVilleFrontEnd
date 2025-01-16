@@ -1,69 +1,173 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../services/products/product.service';
 import { Product } from './product.module';
-import { ProductDescription } from '../services/product/product.model';
-import { ProductListComponent } from '../product-list/product-list.component';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
-import { ProductCategory } from './product-category.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { ProductTileComponent } from "../product-tile/product-tile.component";
+import { ProductListComponent } from "../product-list/product-list.component";
+import { MatCardHeader, MatCardModule } from '@angular/material/card';  // Per i card
+import { MatFormFieldModule } from '@angular/material/form-field';  // Per i form fields
+import { MatSelectModule } from '@angular/material/select';  // Per i select dropdowns
+import { MatDividerModule } from '@angular/material/divider';  // Per i divider
+import { MatInputModule } from '@angular/material/input'; 
+import { MatCard, MatCardContent,MatCardActions } from '@angular/material/card';
+import { CartService } from '../services/cart/cart.service';
+import { AuthService } from '../services/auth/auth-service.service';
+import { Router } from '@angular/router';
+import { ProductCart } from '../models/product-cart.model';
 
 @Component({
   selector: 'app-product',
   standalone: true,
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css'],
-  imports: [NavbarComponent, ProductListComponent, CommonModule, FormsModule,MatIconModule,MatButtonModule],
+  imports: [NavbarComponent,
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardHeader,
+    MatCard,
+    MatCardContent, 
+    MatFormFieldModule, 
+    MatSelectModule, 
+    MatDividerModule,
+    MatInputModule, 
+    MatCardActions, 
+    ProductListComponent],
 })
 export class ProductComponent implements OnInit {
-  product: Product | null = null; // Prodotto singolo
-  productDescription: ProductDescription | null = null; // Descrizione del prodotto
-  productsMapByCategory: Map<ProductCategory, Map<string, Product[]>> = new Map(); // Mappa dei prodotti per categoria
+  
+  product = signal<Product|null>(null); // Prodotto singolo
   categoryProducts: Product[] = []; // Prodotti della stessa categoria del prodotto selezionato
-  imageError = false;
+  availableColors: string[] = []; // Colori disponibili
+  availableSizes: string[] = []; // Taglie disponibili per il colore selezionato
+  selectedColor: string = ''; // Colore selezionato
+  selectedSize: string = ''; 
+  relatedProductsSignal = signal<Map<string, Product[]>>(new Map()); // Segnale per i prodotti correlati
+  cartProductIds: number[] = []; // Lista degli ID dei prodotti nel carrello
 
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductService
-  ) {}
+    private productService: ProductService,
+    private cartService: CartService,
+    private authService: AuthService,
+    private router: Router, //Router per cambiare programmaticamente la rotta.
+  ) {} 
 
   ngOnInit(): void {
-    // Ottieni l'id del prodotto dalla rotta
     this.route.paramMap.subscribe((params) => {
-      const productId = +params.get('id')!; 
+      console.log('Parametri:', params);
+      const productId = +params.get('id')!;
       if (!isNaN(productId)) {
-        this.fetchProduct(productId);
+        this.fetchProductAndGroupAttributes(productId);
       }
     });
   }
-
-  fetchProduct(productId: number): void {
+  
+  addToCart(): void {
+    if (this.product) {
+      const userId = this.authService.getIdToken(); // Ottieni l'ID dell'utente dal token
+      if (userId) {
+        // Passiamo tutte le proprietà richieste
+        const productDetails: ProductCart = {
+          productId: this.product()?.productId,
+          userId: userId,
+          name: this.product()?.name,
+          largePhoto: this.product()?.largePhoto,
+          price: this.product()?.listPrice ?? 0
+        };
+  
+        this.cartService.addProductToCart(productDetails);
+      } else {
+        console.log('Utente non autenticato. Reindirizzamento alla pagina di login.');
+        this.router.navigate(['/login']);
+      }
+    }
+  }
+  
+  fetchProductAndGroupAttributes(productId: number): void {
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
-        this.product = product;
+  
+        this.product.set(product) ;
         this.loadCategoryProducts(product.productCategoryId);
       },
-      error: (err) =>
-        console.error('Errore durante il caricamento del prodotto:', err),
+      error: (err) => console.error('Errore durante il caricamento del prodotto:', err),
     });
   }
 
   loadCategoryProducts(categoryId: number): void {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
-        // Filtri direttamente tutti i prodotti ottenuti da getAllProducts
-        this.categoryProducts = products.filter(
-          (product) =>
-            product.productCategoryId === categoryId &&
-            product.productId !== this.product?.productId
+        
+        const categoryProducts = products.filter(
+          (product) => product.productCategoryId === categoryId
         );
+        const productMap = new Map<string, Product[]>();
+        categoryProducts.forEach((product) => {
+          if (!productMap.has(product.name)) {
+            productMap.set(product.name, []);
+          }
+          productMap.get(product.name)!.push(product);
+        });
+        this.relatedProductsSignal.set(productMap);
+        this.categoryProducts = categoryProducts;
+        this.groupColorsAndSizes();
       },
       error: (err) =>
         console.error('Errore durante il caricamento dei prodotti correlati:', err),
     });
   }
-    // Se trovi la categoria, carica i prodotti associati
+
+  groupColorsAndSizes(): void {
+    const colors = new Set<string>();
+    const sizesByColor: { [color: string]: string[] } = {};
+    this.categoryProducts.forEach((product) => {
+      if (product.color) colors.add(product.color);
+      if (product.size && product.color) {
+        if (!sizesByColor[product.color]) {
+          sizesByColor[product.color] = [];
+        }
+        sizesByColor[product.color].push(product.size);
+      }
+    });
+    this.availableColors = Array.from(colors);
+    if (this.availableColors.length > 0) {
+      this.selectedColor = this.availableColors[0];
+      this.updateSizesForSelectedColor();
+    }
   }
+
+  // Quando cambia il colore, aggiorno le taglie disponibili
+  onColorChange(color: string): void {
+    this.selectedColor = color;
+    this.selectedSize = ''; 
+    this.updateSizesForSelectedColor();
+  }
+
+  // Aggiorna le taglie per il colore selezionato
+  updateSizesForSelectedColor(): void {
+    const sizes = this.categoryProducts
+      .filter((product) => product.color === this.selectedColor)
+      .map((product) => product.size);
+  
+    this.availableSizes = Array.from(new Set(sizes));
+  
+    this.selectedSize = '';  // La taglia non viene pre-selezionata
+  }
+
+  // Quando la taglia cambia, aggiorna il prodotto visualizzato
+  onSizeChange(): void {
+    const selectedProduct = this.categoryProducts.find(
+      (product) => product.color === this.selectedColor && product.size === this.selectedSize
+    );
+    if (selectedProduct) {
+      this.product.set(selectedProduct); 
+    }
+  }
+}

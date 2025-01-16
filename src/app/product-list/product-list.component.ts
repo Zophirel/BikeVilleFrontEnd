@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ProductTileComponent } from '../product-tile/product-tile.component';
 import { Product } from '../product/product.module';
 
@@ -6,7 +6,8 @@ import { Product } from '../product/product.module';
   selector: 'app-product-list',
   imports: [ProductTileComponent],
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  styleUrls: ['./product-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductListComponent implements OnInit, OnChanges {
 

@@ -13,9 +13,11 @@ export class Product {
   sellEndDate: string | null;
   thumbNailPhoto: string;
   thumbnailPhotoFileName: string;
+  largePhoto: string; 
   modifiedDate: Date | null;
   productCategory: any | null;
   productModel: any | null; 
+  description: any | null; 
 
   static orderByProp = ['Name', 'Price', 'Size', 'Weight', 'Newer'];
 
@@ -34,9 +36,11 @@ export class Product {
     this.sellEndDate = data.sellEndDate ?? null;
     this.thumbNailPhoto = data.thumbNailPhoto ?? '';
     this.thumbnailPhotoFileName = data.thumbnailPhotoFileName ?? '';
+    this.largePhoto = data.largePhoto ?? '';
     this.modifiedDate = data.modifiedDate ?? null;
     this.productCategory = data.productCategory ?? null;
     this.productModel = data.productModel ?? null;
+    this.description = data.description ?? null;
   }
 
   static fromJson(json: string): Product {
@@ -56,9 +60,11 @@ export class Product {
       sellEndDate: data.sellEndDate,
       thumbNailPhoto: data.thumbNailPhoto,
       thumbnailPhotoFileName: data.thumbnailPhotoFileName,
+      largePhoto: data.largePhoto,
       modifiedDate: data.modifiedDate,
       productCategory: data.productCategory,
       productModel: data.productModel,
+      description: data.description
     });
   }
 }

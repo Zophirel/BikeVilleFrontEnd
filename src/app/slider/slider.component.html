@@ -1,8 +1,6 @@
-
-
 <div class="absolute w-full h-[35vh] sm:h-[60vh] flex justify-end items-center pr-5">
     <ul>
-        @for(item of this.sliderImages; track item; let idx = $index){
+        @for(item of this.data; track item; let idx = $index){
             <li>
                 <div
                 (click)="selectDot(idx)"
@@ -20,10 +18,10 @@
     </ul>
 </div>
 <div id="image-ctn w-full h-[35vh] ">
-    <img class="w-full object-cover h-[35vh] sm:h-[60vh]" src="https://bikeville.s3.cubbit.eu/images/slider/{{this.sliderSelectedDot + 1}}.webp">
+    <img class="w-full object-cover h-[35vh] sm:h-[60vh]" src="data:image/gif;base64,{{ this.data[this.sliderSelectedDot].largePhoto }}">
 </div>
-<div class="text-content mt-4 ml-5 mb-9 font-body">
+<div class="text-content mt-4 ml-5 mb-9 font-body pr-3">
     <h1 class="text-lg font-bold text-slate-700">{{this.currentTitle}}</h1>
-    <p class="text-base text-slate-700">{{this.currentDescription}}</p>    
+    <p class="text-base text-slate-700 ">{{this.currentDescription}}</p>    
 </div>
 
