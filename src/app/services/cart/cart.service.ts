@@ -125,4 +125,8 @@ export class CartService {
       lineTotal: productDetails.price,
     };
   }
+
+  clearCart() {
+    localStorage.removeItem('cartItems'); // Remove cart items from local storage
+  }
 }

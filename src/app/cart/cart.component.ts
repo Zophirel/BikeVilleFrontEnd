@@ -65,4 +65,12 @@ export class CartComponent implements OnInit {
     this.cartService.setTotal(this.totalAmount);
     this.router.navigate(['/checkout']);
   }
+
+  emptyCart() {
+    if (confirm('Are you sure you want to empty the cart?')) {
+      this.cartItems = []; // clear the cart items array
+      this.cartService.clearCart(); // cart.service method to clear the cart from local storage
+      this.calculateTotalAmount(); // recalculate total amount
+    }
+  }
 }
