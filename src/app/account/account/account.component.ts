@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ChangeComponent } from '../change/change.component';
 import { UserDataService } from '../../services/custumer/custumer.service';
+import { empty } from 'rxjs';
 
 @Component({
   selector: 'app-account',
@@ -68,6 +69,9 @@ export class AccountComponent implements OnInit{
 
     this.userDataService.getUserAddress(this.data.nameid).subscribe({
       next: (response) => {
+        if(response.length == 0){
+          return console.log("hei, nada indirizzo qua");
+        }
         this.userAddress = response;
         this.userDataService.getAddress(this.userAddress[0].addressId).subscribe({
           next: (response) => {
