@@ -111,7 +111,6 @@ export class UserDataService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     });
-  
     return this.http.get(`${this.addressCustomerUrl}/${userId}`,{ headers });
   }
 
