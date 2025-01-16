@@ -61,7 +61,6 @@ export class AccountComponent implements OnInit{
             this.addressFinal = response;
             console.log(this.addressFinal);
             this.address1 = this.addressFinal.addressLine1;
-            this.address2 = this.addressFinal.addressLine2;
             this.city = this.addressFinal.city;
             this.country = this.addressFinal.countryRegion;
           },
