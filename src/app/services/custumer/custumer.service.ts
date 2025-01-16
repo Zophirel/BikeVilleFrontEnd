@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 //import {Guid} from 'guid-typescript'; // npm i guid-typescript --save
 
-export class Address {
-
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  stateProvince?: string;
-  countryRegion?: string;
-  postalCode?: string;
+export class NewAddress {
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  stateProvince: string;
+  countryRegion: string;
+  postalCode: string;
   rowguid: string;
   modifiedDate: Date;
 
@@ -28,8 +27,16 @@ export class Address {
   }
 }
 
-export class UserData {
+export class Address extends NewAddress{
+  addressId: number;
 
+  constructor(id: number, address1: string, address2: string, city: string,state: string, country: string,  postalCode: string, rowguid: string, date: Date){
+    super(address1, address2, city, state, country,  postalCode, rowguid, date);
+    this.addressId = id;
+  }
+}
+
+export class UserData {
   customerId: number;
   title: string;
   firstName?: string;
@@ -71,16 +78,20 @@ export class UserData {
 export class UserAddress {
   customerId: number;
   addressId: number;
-  addressType: string;
+  addressType!: string;
   rowguid: string;
   modifiedDate: Date;
-
+  // address: Address;
+  // customer: UserData;
+  // address: Address, customer: UserData
   constructor(cId: number, aId: number, type: string, rowguid: string, date: Date) {
     this.customerId = cId;
     this.addressId = aId;
     this.addressType = type;
     this.rowguid = rowguid;
     this.modifiedDate = date;
+    // this.address = address;
+    // this.customer = customer;
   }
 }
 
@@ -101,9 +112,7 @@ export class UserDataService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     });
-    console.log("MAYBE");
-    
-    return this.http.get(`${this.customerUrl}/ ${userId}`, { headers });
+    return this.http.get(`${this.customerUrl}/${userId}`, { headers });
   }
 
   getUserAddress(userId: number): Observable<any> {
@@ -111,7 +120,8 @@ export class UserDataService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     });
-    return this.http.get(`${this.addressCustomerUrl}/${userId}`,{ headers });
+    //29485
+    return this.http.get(`${this.addressCustomerUrl}/${userId}`, { headers });
   }
 
   getAddress(id: number): Observable<any> {
@@ -143,18 +153,27 @@ export class UserDataService {
     return this.http.put<UserData>(url, userData, { headers }); // Effettua la chiamata 
   }
 
-  updateUserAddress(userData: Address, userId: string): Observable<any> {
+  updateAddress(userData: Address, addressId: number): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     });
-    const url = `${this.customerUrl}/${userId}`;
+    const url = `${this.addressUrl}/${addressId}`;
+    return this.http.put(url, userData, { headers });
+  }
+
+  updateUserAddress(userData: UserAddress, userId: number, addressId:number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getToken()}`
+    });
+    const url = `${this.addressCustomerUrl}/${userId}/${addressId}`;
     return this.http.put(url, userData, { headers });
   }
 
 
   //INSERT
-  insertAddress(userData: Address): Observable<any> {
+  insertAddress(userData: NewAddress): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
@@ -169,12 +188,10 @@ export class UserDataService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     });
-    console.log('Sending userData:', JSON.stringify(userAddress, null, 2));
+    console.log('Sending userAddress:', JSON.stringify(userAddress, null, 2));
     const url = `${this.addressCustomerUrl}`;
     return this.http.post(url, userAddress, { headers });
   }
-
-
 
   private getToken(): string | null {
     const tokens = localStorage.getItem('auth');
