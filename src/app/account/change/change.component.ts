@@ -17,6 +17,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MessageStatus } from '../../auth/signup/Enums';
 import { UserDataService } from '../../services/custumer/custumer.service';
+import { Address } from '../../services/custumer/custumer.service';
+import { UserData } from '../../services/custumer/custumer.service';
 import { UserAddress } from '../../services/custumer/custumer.service';
 
 @Component({
@@ -52,11 +54,19 @@ export class ChangeComponent implements OnInit {
 
   loading = signal(false);
   profile = signal(null);
+
   data: any;
   userAddress: any[] = []; // contiene il risultato get USER - ADDRESS
   addressFinal: any; // contiene il risultato get ADDRESS
-  addressClass!: UserAddress; // classe con i dati dell'indirizzo 
+
+  addressClass!: Address; // classe con i dati dell'indirizzo 
+  userClass!: UserData; //classe con i dati del user
+  userAddressClass!: UserAddress;  // classe con indirizzo - utente
+
+  addressId!: number;
   addressType: string = "";
+  flagAddress: boolean = true;
+
 
   private authService: AuthService;
   private _snackBar = inject(MatSnackBar);
@@ -110,13 +120,13 @@ export class ChangeComponent implements OnInit {
 
   initializeFormData() {
     this.changeForm.patchValue({
-      title: this.data.title || '',
-      name: this.data.name || this.data.unique_name || '',
-      middle: this.data.middle_name || '',
-      surname: this.data.family_name || '',
-      email: this.data.email || '',
-      phone: this.data.Phone || '',
-      company: this.data.Company || ''
+      title: this.userClass.title || '',
+      name: this.userClass.firstName || '',
+      middle: this.userClass.middleName || '',
+      surname: this.userClass.lastName || '',
+      email: this.userClass.emailAddress || '',
+      phone: this.userClass.phone || '',
+      company: this.userClass.companyName || ''
     });
   }
 
@@ -125,8 +135,8 @@ export class ChangeComponent implements OnInit {
       addressLine1: this.addressClass.addressLine1 || '',
       addressLine2: this.addressClass.addressLine2 || '',
       city: this.addressClass.city || '',
-      country: this.addressClass.country || '',
-      state: this.addressClass.state || '',
+      state: this.addressClass.stateProvince || '',
+      country: this.addressClass.countryRegion || '',
       postalCode: this.addressClass.postalCode || ''
     });
 
@@ -138,9 +148,9 @@ export class ChangeComponent implements OnInit {
     }
   }
 
-  initializeFormAddressType(dato: string) {
+  initializeFormAddressType() {
     this.changeForm.patchValue({
-      addressType: dato || '',
+      addressType: this.userAddressClass.addressType || '',
     });
   }
   // function to autocomplete the form with the given data
@@ -148,22 +158,46 @@ export class ChangeComponent implements OnInit {
     const token = this.getIdToken();
     if (token) {
       this.data = this.getTokenData(token);
-      this.initializeFormData();
+
+      this.userDataService.getUserData(this.data.nameid).subscribe({
+        next: (response) => {
+          const u = response;
+          console.log(response);
+          this.userClass = new UserData(u.customerId, u.title, u.firstName, u.middleName, u.lastName, u.emailAddress, u.phone, u.companyName, u.salesPerson,
+            u.passwordHash, u.passwordSalt, u.rowguid, u.migratedCustomer, u.signedWithGoogle, u.isAdmin, u.emailVerified);
+          this.initializeFormData();
+        },
+        error: (error) => {
+          let errorMessage = 'An error occurred in getUserData';
+          console.log(errorMessage);
+          console.log(error);
+
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          }
+        }
+      });
 
       this.userDataService.getUserAddress(this.data.nameid).subscribe({
         next: (response) => {
-          this.userAddress = response;
-          this.addressType = this.userAddress[0].addressType;
-          this.initializeFormAddressType(this.addressType);
+          if (response.length == 0) {
+            this.flagAddress = false;
+            return console.log("nada indirizzo parte 2");
+          }
+          const a = response;
+          console.log(response);
+          this.userAddressClass = new UserAddress(a[0].customerId, a[0].addressId, a[0].addressType, a[0].rowguid, a[0].modifiedDate);
+          this.initializeFormAddressType();
 
-          this.userDataService.getAddress(this.userAddress[0].addressId).subscribe({
+          this.userDataService.getAddress(this.userAddressClass.addressId).subscribe({
             next: (response) => {
               const r = response;
-              this.addressClass = new UserAddress(r.addressId, r.addressLine1, r.addressLine2, r.city, r.countryRegion, r.stateProvince, r.postalCode);
+              this.addressClass = new Address(r.addressLine1, r.addressLine2, r.city, r.stateProvince, r.countryRegion, r.postalCode, r.rowguid, r.modifiedDate);
               this.initializeFormAddress();
             },
             error: (error) => {
               let errorMessage = 'An error occurred in getAddress';
+              console.log(errorMessage);
               console.log(error);
 
               if (error.error?.message) {
@@ -233,64 +267,31 @@ export class ChangeComponent implements OnInit {
 
 
   saveChanges() {
-    console.log("ciao");
+
     if (this.changeForm.valid) {
-      console.log("ciao2");
-      const userData = {
-        title: this.changeForm.get('title')?.value,
-        name: this.changeForm.get('name')?.value,
-        middle: this.changeForm.get('middle')?.value,
-        surname: this.changeForm.get('surname')?.value,
-        email: this.changeForm.get('email')?.value,
-        phone: this.changeForm.get('phone')?.value,
-        company: this.changeForm.get('company')?.value,
-      };
-      console.log(userData);
 
-      const userAddress = {
-        id: this.addressClass.id,
-        addressLine1: this.changeForm.get('addressLine1')?.value,
-        addressLine2: this.changeForm.get('addressLine2')?.value,
-        city: this.changeForm.get('city')?.value,
-        country: this.changeForm.get('country')?.value,
-        state: this.changeForm.get('state')?.value,
-        postalCode: this.changeForm.get('postalCode')?.value
-      }
-      console.log(userAddress);
+      // update customer
+      const userData = new UserData(
+        this.userClass.customerId,
+        this.changeForm.get('title')?.value,
+        this.changeForm.get('name')?.value,
+        this.changeForm.get('middle')?.value,
+        this.changeForm.get('surname')?.value,
+        this.changeForm.get('email')?.value,
+        this.changeForm.get('phone')?.value,
+        this.changeForm.get('company')?.value,
+        this.userClass.salesPerson,
+        this.userClass.passwordHash,
+        this.userClass.passwordSalt,
+        this.userClass.rowGuid,
+        this.userClass.migratedCustomer,
+        this.userClass.signedWithGoogle,
+        this.userClass.isAdmin,
+        this.userClass.emailVerified
+      );
 
-      // this.userDataService.updateUserData(userData, this.data.nameid).subscribe({
-      //   next: (response) => {
-      //     console.log("ok");
-      //     this.loading.set(false);
-      //     this._snackBar.open('Your data has been successfully updated', 'Close', {
-      //       duration: 3000,
-      //       horizontalPosition: 'end',
-      //       verticalPosition: 'top',
-      //       panelClass: ['success-snackbar']
-      //     });
-      //   },
-      //   error: (error) => {
-      //     this.loading.set(false);
-      //     let errorMessage = 'An error occurred while updating your data';
-      //     console.log(error);
-      //     if (error.error?.message) {
-      //       errorMessage = error.error.message;
-      //     }
-
-      //     this._snackBar.open(errorMessage, 'Close', {
-      //       duration: 5000,
-      //       horizontalPosition: 'end',
-      //       verticalPosition: 'top',
-      //       panelClass: ['error-snackbar']
-      //     });
-      //   }
-      // });
-
-      this.userDataService.getUserAddress(this.data.nameid).subscribe({
+      this.userDataService.updateUserData(userData).subscribe({
         next: (response) => {
-          this.userAddress = response;
-          console.log(this.userAddress[0].addressId);
-
           this._snackBar.open('Your data has been successfully updated', 'Close', {
             duration: 3000,
             horizontalPosition: 'end',
@@ -301,7 +302,6 @@ export class ChangeComponent implements OnInit {
         error: (error) => {
           let errorMessage = 'An error occurred while updating your data';
           console.log(error);
-
           if (error.error?.message) {
             errorMessage = error.error.message;
           }
@@ -314,6 +314,94 @@ export class ChangeComponent implements OnInit {
           });
         }
       });
+
+      const address = new Address(
+        this.changeForm.get('addressLine1')?.value,
+        this.changeForm.get('addressLine2')?.value,
+        this.changeForm.get('city')?.value,
+        this.changeForm.get('state')?.value,
+        this.changeForm.get('country')?.value,
+        this.changeForm.get('postalCode')?.value,
+        crypto.randomUUID(),
+        new Date,
+      );
+
+      if (this.flagAddress) {
+        // true, indirizzo esiste già - faccio solo una put per aggiornarlo
+      }
+      else {
+        // false, indirizzo non esiste - devo fare una post
+        
+        this.userDataService.insertAddress(address).subscribe({
+          next: (response) => {
+            this.userDataService.getAddressByGuid(address.rowguid).subscribe({
+              next: (response) => {
+                this.addressId = response.addressId;
+                console.log(this.addressId);
+
+                const userAddress = new UserAddress(
+                  this.userClass.customerId,
+                  this.addressId,
+                  this.changeForm.get('addressType')?.value,
+                  crypto.randomUUID(),
+                  new Date,
+                )
+                this.userDataService.insertUserAddress(userAddress).subscribe({
+                  next: (response) => {
+                    console.log(response);
+                  },
+                  error: (error) => {
+                    console.log("no " + error);
+                    console.log('Sending userData:', JSON.stringify(error, null, 2));
+                    console.error();
+                  }
+                });
+              },
+              error: (error) => {
+                console.log("SAAAAD222223");
+                let errorMessage = 'An error occurred while inserting your address';
+                console.log(error);
+                if (error.error?.message) {
+                  errorMessage = error.error.message;
+                }
+              }
+            });
+          },
+          error: (error) => {
+            console.log("SAAAAD");
+            let errorMessage = 'An error occurred while inserting your address';
+            console.log(error);
+            if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+          }
+        });
+
+      }
+
+
+
+      // this.userDataService.getUserAddress(this.data.nameid).subscribe({
+      //   next: (response) => {
+      //     this.userAddress = response;
+      //     console.log(this.userAddress[0].addressId);
+      //   },
+      //   error: (error) => {
+      //     let errorMessage = 'An error occurred while updating your data';
+      //     console.log(error);
+
+      //     if (error.error?.message) {
+      //       errorMessage = error.error.message;
+      //     }
+
+      //     this._snackBar.open(errorMessage, 'Close', {
+      //       duration: 5000,
+      //       horizontalPosition: 'end',
+      //       verticalPosition: 'top',
+      //       panelClass: ['error-snackbar']
+      //     });
+      //   }
+      // });
 
 
     }
