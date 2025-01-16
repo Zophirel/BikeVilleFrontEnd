@@ -21,8 +21,6 @@ export class CartService {
   private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
-  shipToAddressId: string | undefined;
-
   constructor(private http: HttpClient) { }
 
   // Metodi esistenti
@@ -48,10 +46,6 @@ export class CartService {
 
   getTotal() {
     return this.totalSubject.value;
-  }
-
-  getShippingAddressId() {
-    return this.shipToAddressId;
   }
 
   // Nuovi metodi per le operazioni CRUD

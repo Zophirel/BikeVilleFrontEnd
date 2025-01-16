@@ -101,7 +101,9 @@ export class UserDataService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     });
-    return this.http.get(`${this.customerUrl}/${userId}`, { headers });
+    console.log("MAYBE");
+    
+    return this.http.get(`${this.customerUrl}/ ${userId}`, { headers });
   }
 
   getUserAddress(userId: number): Observable<any> {
@@ -109,8 +111,8 @@ export class UserDataService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     });
-    //29485
-    return this.http.get(`${this.addressCustomerUrl}/${userId}`, { headers });
+  
+    return this.http.get(`${this.addressCustomerUrl}/${userId}`,{ headers });
   }
 
   getAddress(id: number): Observable<any> {

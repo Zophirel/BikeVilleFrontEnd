@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ChangeComponent } from '../change/change.component';
 import { UserDataService } from '../../services/custumer/custumer.service';
-import { empty } from 'rxjs';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-account',
@@ -38,34 +38,12 @@ export class AccountComponent implements OnInit{
   ];
 
   currentArrow: string = this.images[0];
-  constructor(private http: HttpClient, private userDataService: UserDataService){
-    console.log(this.getTokenData(this.getIdToken()));
-  }
-
-  getAccessToken(){
-    let tokens = localStorage.getItem('auth');
-    if(tokens){
-      let auth = JSON.parse(tokens);
-      return auth[1];
-    } 
-  }
-
-  getIdToken(){
-    let tokens = localStorage.getItem('auth');
-    if(tokens){
-      let auth = JSON.parse(tokens);
-      return auth[0];
-    } 
-  }
-
-  getTokenData(token: string){
-    let data = token.split('.')[1];
-    let decodedData = atob(data);
-    return JSON.parse(decodedData);
+  constructor(private http: HttpClient, private userDataService: UserDataService, private tokenService: TokenService){
+    console.log(tokenService.getTokenData());
   }
 
   ngOnInit(): void {
-    this.data = this.getTokenData(this.getIdToken());
+    this.data = this.tokenService.getTokenData();
 
     this.userDataService.getUserAddress(this.data.nameid).subscribe({
       next: (response) => {
