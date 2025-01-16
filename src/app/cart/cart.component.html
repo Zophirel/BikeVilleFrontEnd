@@ -25,14 +25,14 @@
                                         class="bg-gray-200 text-gray-700 px-3 py-2 text-xs sm:text-sm md:text-base font-medium rounded-lg w-16 md:w-24" />
 
                                     <!-- Salva la quantità modificata -->
-                                    <button (click)="saveQuantity(item, i)"
+                                    <button (click)="saveQuantity(item)"
                                         class="bg-blue-500 text-white px-3 py-2 text-xs sm:text-sm md:text-base font-medium rounded-lg">
                                         Save Quantity
                                     </button>
 
 
                                     <!-- Remove button -->
-                                    <button (click)="removeItem(item.salesOrderId, item.salesOrderDetailId)"
+                                    <button (click)="removeItem(item.productId)"
                                         class="bg-gray-200 text-gray-700 px-3 py-2 text-xs sm:text-sm md:text-base font-medium rounded-lg flex items-center">
                                         Remove
                                     </button>

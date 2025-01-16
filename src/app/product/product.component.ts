@@ -79,17 +79,10 @@ export class ProductComponent implements OnInit {
           userId: userId,
           name: this.product()?.name,
           largePhoto: this.product()?.largePhoto,
-          price: this.product()?.listPrice
+          price: this.product()?.listPrice ?? 0
         };
   
-        this.cartService.addProductToCart(productDetails).subscribe(
-          (response: any) => {
-            console.log('Prodotto aggiunto al carrello:', response);
-          },
-          (error: any) => {
-            console.error('Errore durante l\'aggiunta del prodotto al carrello:', error);
-          }
-        );
+        this.cartService.addProductToCart(productDetails);
       } else {
         console.log('Utente non autenticato. Reindirizzamento alla pagina di login.');
         this.router.navigate(['/login']);

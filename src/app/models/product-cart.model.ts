@@ -3,5 +3,5 @@ export interface ProductCart {
     userId: any;
     name: string | undefined;
     largePhoto: string | undefined;
-    price: number | undefined;
+    price: number;
 }
