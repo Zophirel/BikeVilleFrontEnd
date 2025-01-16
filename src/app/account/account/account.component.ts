@@ -25,9 +25,14 @@ export class AccountComponent implements OnInit{
   private tokens = localStorage.getItem('auth');
   data: any; //prova
   address1: any; // contiene la prima riga di indirizzo
-  address2: any; // contiene la seconda riga dell'indirizzo
   country: any; // contiene il paese
   city: any; // contiene la città
+
+  name: any;
+  middle: any;
+  last: any;
+  phone: any;
+  mail: any;
   userAddress: any[] = []; // contiene il risultato get USER - ADDRESS
   addressFinal: any; // contiene il risultato get ADDRESS
 
@@ -73,6 +78,28 @@ export class AccountComponent implements OnInit{
       },
       error: (error) => {
         let errorMessage = 'An error occurred in getUserAddress';
+        console.log(error);
+
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+      }
+    });
+
+     this.userDataService.getUserData(this.data.nameid).subscribe({
+      next: (response) => {
+        const u = response;
+        console.log(response);
+        this.name = u.firstName;
+        this.middle = u.middleName;
+        this.last = u.lastName; 
+        this.phone = u.phone; 
+        this.mail = u.emailAddress; 
+      
+      },
+      error: (error) => {
+        let errorMessage = 'An error occurred in getUserData';
+        console.log(errorMessage);
         console.log(error);
 
         if (error.error?.message) {
