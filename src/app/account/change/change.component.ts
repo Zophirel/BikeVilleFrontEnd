@@ -16,7 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MessageStatus } from '../../auth/signup/Enums';
-import { UserDataService } from '../../services/custumer/custumer.service';
+import { NewAddress, UserDataService } from '../../services/custumer/custumer.service';
 import { Address } from '../../services/custumer/custumer.service';
 import { UserData } from '../../services/custumer/custumer.service';
 import { UserAddress } from '../../services/custumer/custumer.service';
@@ -60,10 +60,12 @@ export class ChangeComponent implements OnInit {
   addressFinal: any; // contiene il risultato get ADDRESS
 
   addressClass!: Address; // classe con i dati dell'indirizzo 
+  addressOldClass!: NewAddress; // classe con i dati dell'inserimento di un nuovo indirizzo
   userClass!: UserData; //classe con i dati del user
   userAddressClass!: UserAddress;  // classe con indirizzo - utente
 
-  addressId!: number;
+
+  addressId: number = 0;
   addressType: string = "";
   flagAddress: boolean = true;
 
@@ -133,7 +135,7 @@ export class ChangeComponent implements OnInit {
   initializeFormAddress() {
     this.changeForm.patchValue({
       addressLine1: this.addressClass.addressLine1 || '',
-      addressLine2: this.addressClass.addressLine2 || '',
+      addressLine2: this.addressClass.addressLine2 || null,
       city: this.addressClass.city || '',
       state: this.addressClass.stateProvince || '',
       country: this.addressClass.countryRegion || '',
@@ -192,7 +194,8 @@ export class ChangeComponent implements OnInit {
           this.userDataService.getAddress(this.userAddressClass.addressId).subscribe({
             next: (response) => {
               const r = response;
-              this.addressClass = new Address(r.addressLine1, r.addressLine2, r.city, r.stateProvince, r.countryRegion, r.postalCode, r.rowguid, r.modifiedDate);
+              this.addressClass = new Address(r.addressId, r.addressLine1, r.addressLine2, r.city, r.stateProvince, r.countryRegion, r.postalCode, r.rowguid, r.modifiedDate);
+              this.addressId = r.addressId;
               this.initializeFormAddress();
             },
             error: (error) => {
@@ -265,6 +268,9 @@ export class ChangeComponent implements OnInit {
     );
   }
 
+  // changeAccount() {
+  //   this.router.navigateByUrl('/account');
+  // }
 
   saveChanges() {
 
@@ -315,36 +321,78 @@ export class ChangeComponent implements OnInit {
         }
       });
 
-      const address = new Address(
-        this.changeForm.get('addressLine1')?.value,
-        this.changeForm.get('addressLine2')?.value,
-        this.changeForm.get('city')?.value,
-        this.changeForm.get('state')?.value,
-        this.changeForm.get('country')?.value,
-        this.changeForm.get('postalCode')?.value,
-        crypto.randomUUID(),
-        new Date,
-      );
 
-      if (this.flagAddress) {
-        // true, indirizzo esiste già - faccio solo una put per aggiornarlo
+      if (this.flagAddress) {// true, indirizzo esiste già - faccio solo una put per aggiornarlo
+
+        const address = new Address(
+          this.addressClass.addressId,
+          this.changeForm.get('addressLine1')?.value,
+          this.changeForm.get('addressLine2')?.value,
+          this.changeForm.get('city')?.value,
+          this.changeForm.get('state')?.value,
+          this.changeForm.get('country')?.value,
+          this.changeForm.get('postalCode')?.value,
+          crypto.randomUUID(), // !!! non va modificato poi nel backend
+          new Date,
+        );
+
+        const userAddress = new UserAddress (
+          userData.customerId,
+          address.addressId,
+          this.changeForm.get('addressType')?.value,
+          crypto.randomUUID(), // !!! non va modificato poi nel backend
+          new Date,
+          // address,
+          // userData,
+        );
+        
+        this.userDataService.updateAddress(address, userAddress.addressId).subscribe({
+          next: (response) => {
+          }, 
+          error: (error) => {
+            console.log('Sending userData:', JSON.stringify(error, null, 2));
+            console.error();
+          }
+        });
+
+        this.userDataService.updateUserAddress(userAddress, userAddress.customerId, userAddress.addressId).subscribe({
+          next: (response) => {
+          }, 
+          error: (error) => {
+            console.log('Sending userData:', JSON.stringify(error, null, 2));
+            console.error();
+          }
+        });
       }
       else {
         // false, indirizzo non esiste - devo fare una post
-        
-        this.userDataService.insertAddress(address).subscribe({
+        const newAddress = new NewAddress(
+          this.changeForm.get('addressLine1')?.value,
+          this.changeForm.get('addressLine2')?.value,
+          this.changeForm.get('city')?.value,
+          this.changeForm.get('state')?.value,
+          this.changeForm.get('country')?.value,
+          this.changeForm.get('postalCode')?.value,
+          crypto.randomUUID(),
+          new Date,
+        );
+        this.userDataService.insertAddress(newAddress).subscribe({
           next: (response) => {
-            this.userDataService.getAddressByGuid(address.rowguid).subscribe({
+            this.userDataService.getAddressByGuid(newAddress.rowguid).subscribe({
               next: (response) => {
                 this.addressId = response.addressId;
                 console.log(this.addressId);
-
+                const address = new Address(response.addressId, newAddress.addressLine1, newAddress.addressLine2, newAddress.city, newAddress.stateProvince,
+                  newAddress.countryRegion, newAddress.postalCode, newAddress.rowguid, newAddress.modifiedDate);
+                  console.log('See RESPONSE: ', JSON.stringify(response, null, 2));
                 const userAddress = new UserAddress(
-                  this.userClass.customerId,
+                  userData.customerId,
                   this.addressId,
                   this.changeForm.get('addressType')?.value,
                   crypto.randomUUID(),
                   new Date,
+                  // address,
+                  // userData,
                 )
                 this.userDataService.insertUserAddress(userAddress).subscribe({
                   next: (response) => {
@@ -376,34 +424,7 @@ export class ChangeComponent implements OnInit {
             }
           }
         });
-
       }
-
-
-
-      // this.userDataService.getUserAddress(this.data.nameid).subscribe({
-      //   next: (response) => {
-      //     this.userAddress = response;
-      //     console.log(this.userAddress[0].addressId);
-      //   },
-      //   error: (error) => {
-      //     let errorMessage = 'An error occurred while updating your data';
-      //     console.log(error);
-
-      //     if (error.error?.message) {
-      //       errorMessage = error.error.message;
-      //     }
-
-      //     this._snackBar.open(errorMessage, 'Close', {
-      //       duration: 5000,
-      //       horizontalPosition: 'end',
-      //       verticalPosition: 'top',
-      //       panelClass: ['error-snackbar']
-      //     });
-      //   }
-      // });
-
-
     }
     else {
       // Marca tutti i campi come touched per mostrare gli errori
@@ -422,6 +443,7 @@ export class ChangeComponent implements OnInit {
         panelClass: ['warning-snackbar']
       });
     }
+    this.router.navigateByUrl('/account');
   }
 
 }
