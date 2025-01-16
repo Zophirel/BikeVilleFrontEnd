@@ -10,20 +10,19 @@ import { CartItem } from '../../models/cart-item.model';
 export class CartService {
   private cartItemsKey = 'cartItems';
 
-  // Manteniamo i BehaviorSubject esistenti
+  // we keep the existing BehaviorSubjects
   private quantitySubject = new BehaviorSubject<number>(1);
   quantity$ = this.quantitySubject.asObservable();
 
   private totalSubject = new BehaviorSubject<number>(0);
   total$ = this.totalSubject.asObservable();
 
-  // Aggiungiamo un nuovo BehaviorSubject per gli items del carrello
+  //add a new BehaviorSubject for the cart items
   private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
-  // Metodi esistenti
   setQuantity(quantity: number) {
     this.quantitySubject.next(quantity);
   }
@@ -48,13 +47,12 @@ export class CartService {
     return this.totalSubject.value;
   }
 
-  // Nuovi metodi per le operazioni CRUD
   getCartItems(): CartItem[] {
     const items = localStorage.getItem(this.cartItemsKey);
     return items ? JSON.parse(items) as CartItem[] : [];
   }
 
-  // Aggiorna il carrello locale
+  // update the cart
   updateCartItems(updatedItem: CartItem) {
     const items = this.getCartItems();
     const changedItem = items.find(item => item.productId === updatedItem.productId);
@@ -64,11 +62,10 @@ export class CartService {
     changedItem.orderQty = updatedItem.orderQty;
     changedItem.lineTotal = changedItem.unitPrice * updatedItem.orderQty * (1 - changedItem.unitPriceDiscount);
 
-    // for live update
     updatedItem.lineTotal = changedItem.lineTotal;
 
     this.cartItemsSubject.next(items);
-    // Aggiorna anche il totale
+    // update the total
     const newTotal = items.reduce((sum, item) =>
       sum + (item.unitPrice * item.orderQty * (1 - item.unitPriceDiscount)), 0
     );
@@ -77,7 +74,6 @@ export class CartService {
     localStorage.setItem(this.cartItemsKey, JSON.stringify(items));
   }
 
-  // Rimuovi un item dal carrello utilizzando salesOrderId e salesOrderDetailId
   removeFromCart(productId: number | undefined) {
     if(!productId){
       return;
@@ -90,7 +86,7 @@ export class CartService {
     localStorage.setItem(this.cartItemsKey, JSON.stringify(cartItems));
   }
 
-  // Ottieni gli items correnti del carrello
+  // Get the current cart items
   getCurrentCartItems(): CartItem[] {
     return this.cartItemsSubject.value;
   }
@@ -100,7 +96,7 @@ export class CartService {
     const existingItem = cartItems.find(item => item.productId === productDetails.productId);
 
     if (existingItem) {
-      // se il prodotto esiste nel carrello, aggiorna la quantità
+      // if the product exists in the cart, update the quantity
       existingItem.orderQty += 1;
       existingItem.lineTotal = existingItem.unitPrice * existingItem.orderQty * (1 - existingItem.unitPriceDiscount);
     } else {

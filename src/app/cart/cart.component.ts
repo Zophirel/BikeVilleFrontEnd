@@ -44,7 +44,7 @@ export class CartComponent implements OnInit {
       return;
     }
   
-    this.cartService.updateCartItems(item); // Ricarica gli item aggiornati nel carrello
+    this.cartService.updateCartItems(item); // reload the updated items into your cart
     this.calculateTotalAmount(); 
   }
 
