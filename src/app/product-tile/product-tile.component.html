@@ -1,9 +1,35 @@
-<div id="w-44" (click)="navigateToProduct()">
-  <img class="object-cover h-[39vw] w-[39vw] max-w-[200px] max-h-[200px] rounded-xl" 
-       src="data:image/gif;base64,{{ this.product?.largePhoto }}" /> <!--CAMBIARE FOTO CON LARGE FOTO cambiare su product -->
-</div>
-<div class="w-[39vw] max-w-[200px]">
-  <h1 class="mt-2 font-semibold text-wrap">{{ this.product?.name }}</h1>
-  <p class="text-sm opacity-70">${{ this.product?.listPrice }}</p>
-</div>
-
+<div class="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition">
+  <div class="cursor-pointer" (click)="navigateToProduct()">
+    <!-- Sezione cliccabile per navigare al prodotto -->
+    <div class="flex justify-center">
+      <img
+        class="object-cover h-40 w-40 max-w-full rounded-lg"
+        [src]="'data:image/gif;base64,' + product?.largePhoto"
+        alt="{{ product?.name }}"
+      />
+    </div>
+    <div class="mt-4 text-center">
+      <h1 class="font-semibold text-lg truncate">{{ product?.name }}</h1>
+      <p class="text-gray-600">${{ product?.listPrice }}</p>
+    </div>
+  </div>
+  
+  <!-- Pulsante Aggiungi al Carrello (non clicca sul div esterno) -->
+  <div class="flex justify-between items-center mt-4">
+    <button
+      mat-icon-button
+      class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-600 transition"
+      aria-label="Add to Wishlist"
+    >
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-green-600 transition"
+      aria-label="Add to Cart"
+      (click)="addToCart()"
+    >
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
+  </div>
+</div> 
