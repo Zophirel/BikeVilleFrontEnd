@@ -6,7 +6,7 @@
     <!-- Immagine -->
     <mat-card-header class="flex justify-center items-center w-full lg:w-5/5 p-4">
       <div mat-card-avatar class="product-image-container w-full h-[30rem]">
-        <img src="data:image/gif;base64,{{ product()?.thumbNailPhoto }}"
+        <img src="data:image/gif;base64,{{ product()?.largePhoto }}"
           class="w-full h-full object-contain rounded-lg shadow-lg" alt="Product Image" />
       </div>
     </mat-card-header>
@@ -16,8 +16,7 @@
       <div class="product-details">
         <h2 class="product-name text-3xl font-semibold text-gray-800">{{ product()?.name }}</h2>
         <p class="product-id text-lg text-gray-600 mt-2">ID Prodotto: {{ product()?.productNumber }}</p>
-        <p class="product-id text-lg text-gray-600 mt-2">Descrizione: {{ product()?.description || 'Descrizione non
-          disponibile' }}</p>
+        <p class="product-id text-lg text-gray-600 mt-2">Descrizione: {{ product()?.description || 'Descrizione non disponibile' }}</p>
 
 
         <!-- Colori -->

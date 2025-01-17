@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Product } from '../product/product.module';
 import { ChangeDetectorRef } from '@angular/core';
 import { CacheService } from '../services/cache/cache.service';
@@ -9,8 +9,7 @@ import { CacheService } from '../services/cache/cache.service';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './slider.component.html',
-    styleUrl: './slider.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrl: './slider.component.scss'
 })
 export class SliderComponent implements  OnDestroy, OnChanges{
 
