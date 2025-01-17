@@ -7,9 +7,8 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ProductTileComponent } from "../product-tile/product-tile.component";
 import { ProductListComponent } from "../product-list/product-list.component";
-import { MatCardHeader, MatCardModule } from '@angular/material/card';  // Per i card
+import { MatCardHeader } from '@angular/material/card';  // Per i card
 import { MatFormFieldModule } from '@angular/material/form-field';  // Per i form fields
 import { MatSelectModule } from '@angular/material/select';  // Per i select dropdowns
 import { MatDividerModule } from '@angular/material/divider';  // Per i divider
@@ -91,10 +90,13 @@ export class ProductComponent implements OnInit {
   }
   
   fetchProductAndGroupAttributes(productId: number): void {
+    console.log('Caricamento del prodotto con ID:', productId);
+
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
-  
-        this.product.set(product) ;
+        
+        console.log('Prodotto:', product); 
+        this.product.set(product);
         this.loadCategoryProducts(product.productCategoryId);
       },
       error: (err) => console.error('Errore durante il caricamento del prodotto:', err),
@@ -104,7 +106,6 @@ export class ProductComponent implements OnInit {
   loadCategoryProducts(categoryId: number): void {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
-        
         const categoryProducts = products.filter(
           (product) => product.productCategoryId === categoryId
         );
