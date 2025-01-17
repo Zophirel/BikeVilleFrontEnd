@@ -50,10 +50,13 @@ export class HomeComponent implements OnDestroy {
         
         for (let productList of this.productsMapByCategory.keys()) {
           if(i == 4) break;
-
+          
           let elem = this.productsMapByCategory.get(productList)![0];
-          productsForHome.push(elem); // Cambia il numero di prodotti mostrati
-          i++;
+          if(elem.thumbnailPhotoFileName != "no_image_available_small.gif"){
+            productsForHome.push(elem); // Cambia il numero di prodotti mostrati
+            i++;
+          }
+
         }
         
         this.homeProducts = productsForHome;
