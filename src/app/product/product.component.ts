@@ -7,9 +7,8 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ProductTileComponent } from "../product-tile/product-tile.component";
 import { ProductListComponent } from "../product-list/product-list.component";
-import { MatCardHeader, MatCardModule } from '@angular/material/card';  // Per i card
+import { MatCardHeader } from '@angular/material/card';  // Per i card
 import { MatFormFieldModule } from '@angular/material/form-field';  // Per i form fields
 import { MatSelectModule } from '@angular/material/select';  // Per i select dropdowns
 import { MatDividerModule } from '@angular/material/divider';  // Per i divider
@@ -18,6 +17,7 @@ import { MatCard, MatCardContent,MatCardActions } from '@angular/material/card';
 import { CartService } from '../services/cart/cart.service';
 import { AuthService } from '../services/auth/auth-service.service';
 import { Router } from '@angular/router';
+import { ProductCart } from '../models/product-cart.model';
 
 @Component({
   selector: 'app-product',
@@ -67,40 +67,36 @@ export class ProductComponent implements OnInit {
       }
     });
   }
-  /*
+  
   addToCart(): void {
     if (this.product) {
       const userId = this.authService.getIdToken(); // Ottieni l'ID dell'utente dal token
       if (userId) {
         // Passiamo tutte le proprietà richieste
-        const productDetails = {
+        const productDetails: ProductCart = {
           productId: this.product()?.productId,
           userId: userId,
           name: this.product()?.name,
           largePhoto: this.product()?.largePhoto,
-          price: this.product()?.listPrice
+          price: this.product()?.listPrice ?? 0
         };
   
-        this.cartService.addProductToCart(productDetails).subscribe(
-          (response: any) => {
-            console.log('Prodotto aggiunto al carrello:', response);
-          },
-          (error: any) => {
-            console.error('Errore durante l\'aggiunta del prodotto al carrello:', error);
-          }
-        );
+        this.cartService.addProductToCart(productDetails);
       } else {
         console.log('Utente non autenticato. Reindirizzamento alla pagina di login.');
         this.router.navigate(['/login']);
       }
     }
   }
-  */
+  
   fetchProductAndGroupAttributes(productId: number): void {
+    console.log('Caricamento del prodotto con ID:', productId);
+
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
-  
-        this.product.set(product) ;
+        
+        console.log('Prodotto:', product); 
+        this.product.set(product);
         this.loadCategoryProducts(product.productCategoryId);
       },
       error: (err) => console.error('Errore durante il caricamento del prodotto:', err),

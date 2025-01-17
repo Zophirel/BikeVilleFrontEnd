@@ -1,4 +1,4 @@
-import { Component, effect, inject, Injectable, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, Injectable, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthGoogleService } from '../../services/auth/google.service';
 import { MessageStatus } from '../signup/Enums';
 import { Router } from '@angular/router';
-import { set } from 'lodash';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -28,7 +28,9 @@ import { set } from 'lodash';
     NavbarComponent,
     NavbarComponent,
     MatIconModule
-]
+    
+],
+changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 @Injectable({ providedIn: 'root' })
@@ -45,6 +47,8 @@ export class LoginComponent {
   password: string | null = null; 
   submitted: boolean  = false; 
   error : Object | null = null; 
+  private authWithGoogle : Subscription | null = null;
+  private loginSubscription : Subscription | null = null; 
 
   constructor(authService: AuthService) {
     this.authService = authService;
@@ -55,11 +59,9 @@ export class LoginComponent {
       console.log('idToken: ' + idToken);
       
       if(idToken){
-        this.authService.authWithGoogle(idToken).subscribe({
+       this.authWithGoogle = this.authService.authWithGoogle(idToken).subscribe({
           next: (data) => {
             console.log('The next value is: ', data);
-
-            
             localStorage.setItem('auth', data.body);
           },
           
@@ -72,12 +74,10 @@ export class LoginComponent {
             this.loading.set(false);
             
             this.messageStatus = MessageStatus.Success;
+            await this.router.navigateByUrl('/home');
             this.openSnackBar("Successfully logged in!", 'Close');
             
-            setTimeout( async () => { 
-              await this.router.navigateByUrl('/home');
-            }, 3300);
-            
+       
           }
         })
       }
@@ -98,7 +98,7 @@ export class LoginComponent {
     
     if (!this.email || !this.password) return;
   
-    this.authService.login(this.email, this.password).subscribe({
+    this.loginSubscription = this.authService.login(this.email, this.password).subscribe({
       next: (data) => {
         console.log('The next value is: ', data);
         localStorage.setItem('auth', data.body); 
@@ -116,4 +116,10 @@ export class LoginComponent {
       complete: () => {console.log('There are no more actions to happen.')}
     });
   }
+
+  ngOnDestroy(): void {
+    this.authWithGoogle?.unsubscribe();
+    this.loginSubscription?.unsubscribe();
+  }
+
 }

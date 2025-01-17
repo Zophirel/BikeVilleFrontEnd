@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, inject, signal, ViewChild, WritableSignal } from '@angular/core';
-import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy,Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth/auth-service.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,7 @@ import { passwordValidator } from '../auth/signup/password-validator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import PasswordMatcher from '../auth/signup/models/PasswordMatcher';
-import { flatMap } from 'lodash';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-signup',
@@ -37,7 +37,7 @@ import { flatMap } from 'lodash';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class TokenPageComponent {
+export class TokenPageComponent implements OnInit, OnDestroy {
  
   router = inject(Router);
   passwordFormControl = new FormControl('', [Validators.required, passwordValidator()]);
@@ -52,11 +52,15 @@ export class TokenPageComponent {
   isUserMigrating: boolean = false;
   isUserVerifyingEmail: boolean = false;
   resultText = signal("");
+  currentSubscription : Subscription | null = null;
+  
   constructor(private auth: AuthService, private route: ActivatedRoute) {
+  
   }
+  
 
   ngOnInit() {
-    
+  
     this.route.params.subscribe(params => {
       this.loading.set(true);
       this.encodedToken = params['encodedToken']; 
@@ -77,7 +81,7 @@ export class TokenPageComponent {
       } else if(this.tokenData.type === 'email-validation'){
         this.isUserVerifyingEmail = true;
        
-        this.auth.validateEmail(this.encodedToken).subscribe({
+        this.currentSubscription = this.auth.validateEmail(this.encodedToken).subscribe({
           next: (response: any) => {
             console.log("Email validated!");
             this.resultText.set("Operation successful, please login to continue");
@@ -94,11 +98,10 @@ export class TokenPageComponent {
         this.loading.set(false);
       }
     });
-   
   }
 
   changePassword(){
-    this.auth.changePassword(this.encodedToken, this.password).subscribe({
+    this.currentSubscription = this.auth.changePassword(this.encodedToken, this.password).subscribe({
       next: (response: any) => {
         console.log("Password changed!");
         this.resultText.set("Password changed successfully, please login to continue");
@@ -112,7 +115,7 @@ export class TokenPageComponent {
   }
 
   migrateUser(){
-    this.auth.migrateUser(this.encodedToken, this.password).subscribe({
+    this.currentSubscription = this.auth.migrateUser(this.encodedToken, this.password).subscribe({
       next: (response: any) => {
         console.log("User migrated!");
         this.resultText.set("User migrated successfully, please login to continue"); ;
@@ -131,5 +134,10 @@ export class TokenPageComponent {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
+
+  ngOnDestroy(): void {
+    this.currentSubscription?.unsubscribe();
+  }
+
 
 }

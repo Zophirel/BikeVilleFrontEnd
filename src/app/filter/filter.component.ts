@@ -1,18 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, input, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterDialog } from '../filter-dialog/filter-dialog.component';
 import { ProductCategory } from '../product/product-category.module';
 import {EmittedFilterValue} from '../filter-dialog/emitted-filter.module.';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-filter',
     imports: [MatChipsModule, CommonModule],
     templateUrl: './filter.component.html',
-    styleUrl: './filter.component.scss'
+    styleUrl: './filter.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent implements OnInit, OnDestroy {
  
   @Input() category : ProductCategory | undefined;
   @Input() subCategories : ProductCategory[] | undefined;
@@ -20,6 +22,7 @@ export class FilterComponent implements OnInit {
 
   subCategoriesForUi : EmittedFilterValue[] = [];
   isSelected: boolean = false;
+  dialogSubscription: Subscription | null = null;
 
   ngOnInit(): void {
     try{
@@ -41,12 +44,16 @@ export class FilterComponent implements OnInit {
       
     });
 
-    dialogRef.afterClosed().subscribe(result => {     
+    this.dialogSubscription = dialogRef.afterClosed().subscribe(result => {     
       if (result !== undefined) {
         this.subCategoriesForUi = result.subCategories;
         this.categoriesEmitter.emit(result.subCategories);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.dialogSubscription?.unsubscribe();
   }
 }
 

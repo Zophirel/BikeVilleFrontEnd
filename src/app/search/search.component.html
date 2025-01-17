@@ -12,7 +12,7 @@
             <div class="flex flex-row justify-end mt-3 gap-2 mr-5">
                 <app-filter 
                     (categoriesEmitter)="categoriesEmitter($event)" 
-                    [subCategories]="this.allCategories.get(product[0])" 
+                    [subCategories]="this.allCategories?.get(product[0])" 
                     [category]="product[0]">
                 </app-filter>
                 <app-order [category]="product[0]" (orderByEmitter)="orderByEmitter($event)"></app-order>

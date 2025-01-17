@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../navbar/navbar.component';
@@ -20,7 +20,8 @@ import { MatInputModule } from '@angular/material/input';
       MatInputModule
     ],
     templateUrl: './forgot-pass.component.html',
-    styleUrl: './forgot-pass.component.scss'
+    styleUrl: './forgot-pass.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotPassComponent {
   email: string = '';

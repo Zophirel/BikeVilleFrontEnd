@@ -28,7 +28,6 @@ export class ProductService {
     }, new Map<string, Product[]>());
   }
 
-
   getAllProductCategories(){
     return this.http.get<ProductCategory[]>('https://zophirel.it/api/productCategory')
   }
@@ -87,7 +86,7 @@ export class ProductService {
   }
   
   getProductById(productId: number) {
-    return this.http.get<Product>(`https://zophirel.it/api/product/${productId}`);
+    return this.http.get<Product>(`https://zophirel.it/api/product/view/${productId}`);
   }
   getProductDescription(descriptionId: number) {
     return this.http.get<ProductDescription>(`https://zophirel.it/api/ProductDescription/${descriptionId}`);
@@ -106,6 +105,4 @@ export class ProductService {
   
     return productsMap;
   }
-
-
 }

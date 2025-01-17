@@ -16,7 +16,7 @@
       <div class="product-details">
         <h2 class="product-name text-3xl font-semibold text-gray-800">{{ product()?.name }}</h2>
         <p class="product-id text-lg text-gray-600 mt-2">Product ID: {{ product()?.productNumber }}</p>
-        <p class="product-id text-lg text-gray-600 mt-2">Description: {{ product()?.description || 'Descrizione non disponibile' }}</p>
+        <p class="product-id text-lg text-gray-600 mt-2">Description: {{ product()?.description || 'Description not available' }}</p>
 
 
         <!-- Colori -->
@@ -33,6 +33,7 @@
         <div *ngIf="availableSizes.length > 0" class="size-selection mt-4">
           <mat-form-field appearance="fill" class="w-3/5 sm:w-2/4">
             <mat-label>Select size</mat-label>
+
             <mat-select [(ngModel)]="selectedSize" (ngModelChange)="onSizeChange()"
               [disabled]="availableSizes.length === 0">
               <mat-option *ngFor="let size of availableSizes" [value]="size">{{ size }}</mat-option>

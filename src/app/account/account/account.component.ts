@@ -7,6 +7,8 @@ import { AuthGoogleService } from '../../services/auth/google.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ChangeComponent } from '../change/change.component';
+import { UserDataService } from '../../services/custumer/custumer.service';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-account',
@@ -16,12 +18,24 @@ import { ChangeComponent } from '../change/change.component';
   styleUrl: './account.component.css'
 })
 
+
 export class AccountComponent implements OnInit{
   private googleService = inject(AuthGoogleService);
   private router = inject(Router);  
   private tokens = localStorage.getItem('auth');
   data: any; //prova
-  
+  address1: any; // contiene la prima riga di indirizzo
+  country: any; // contiene il paese
+  city: any; // contiene la città
+
+  name: any;
+  middle: any;
+  last: any;
+  phone: any;
+  mail: any;
+  userAddress: any[] = []; // contiene il risultato get USER - ADDRESS
+  addressFinal: any; // contiene il risultato get ADDRESS
+
   isDropdownOpen = false; // Stato che indica se il dropdown è aperto o chiuso
   images: string[] = [
     "https://bikeville.s3.cubbit.eu/images/account/greater-than.png",
@@ -29,39 +43,86 @@ export class AccountComponent implements OnInit{
   ];
 
   currentArrow: string = this.images[0];
-  constructor(private http: HttpClient){
-    console.log(this.getTokenData(this.getIdToken()));
-  }
-
-  getAccessToken(){
-    let tokens = localStorage.getItem('auth');
-    if(tokens){
-      let auth = JSON.parse(tokens);
-      return auth[1];
-    } 
-  }
-
-  getIdToken(){
-    let tokens = localStorage.getItem('auth');
-    if(tokens){
-      let auth = JSON.parse(tokens);
-      return auth[0];
-    } 
-  }
-
-  getTokenData(token: string){
-    let data = token.split('.')[1];
-    let decodedData = atob(data);
-    return JSON.parse(decodedData);
+  constructor(private http: HttpClient, private userDataService: UserDataService, private tokenService: TokenService){
+    console.log(tokenService.getTokenData());
   }
 
   ngOnInit(): void {
-    this.data = this.getTokenData(this.getIdToken());
+    this.data = this.tokenService.getTokenData();
+
+    this.userDataService.getUserAddress(this.data.nameid).subscribe({
+      next: (response) => {
+        if(response.length == 0){
+          return console.log("hei, nada indirizzo qua");
+        }
+        this.userAddress = response;
+        this.userDataService.getAddress(this.userAddress[0].addressId).subscribe({
+          next: (response) => {
+            this.addressFinal = response;
+            console.log(this.addressFinal);
+            this.address1 = this.addressFinal.addressLine1;
+            this.city = this.addressFinal.city;
+            this.country = this.addressFinal.countryRegion;
+          },
+          error: (error) => {
+            let errorMessage = 'An error occurred in getAddress';
+            console.log(error);
+    
+            if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+          }
+        });
+
+      },
+      error: (error) => {
+        let errorMessage = 'An error occurred in getUserAddress';
+        console.log(error);
+
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+      }
+    });
+
+     this.userDataService.getUserData(this.data.nameid).subscribe({
+      next: (response) => {
+        const u = response;
+        console.log(response);
+        this.name = u.firstName;
+        this.middle = u.middleName;
+        this.last = u.lastName; 
+        this.phone = u.phone; 
+        this.mail = u.emailAddress; 
+      
+      },
+      error: (error) => {
+        let errorMessage = 'An error occurred in getUserData';
+        console.log(errorMessage);
+        console.log(error);
+
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+      }
+    });
   }
 
   changeProfile() {
     // this.change.changeProfile(this.data.sid);
     this.router.navigateByUrl('/change');
+  }
+
+  changeFaqs(){
+    this.router.navigateByUrl('/faq');
+  }
+
+  changeAbout(){
+    this.router.navigateByUrl('/about');
+  }
+
+  changePrivacy(){
+    this.router.navigateByUrl('/privacy');
   }
 
   // Funzione per aprire o chiudere il dropdown

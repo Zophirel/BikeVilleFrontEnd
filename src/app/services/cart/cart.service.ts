@@ -1,33 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
-import { SalesOrderDetail } from '../../models/sales-order-detail.model';
-import { SalesOrderHeader } from '../../models/sales-order-header.model';
-import { environment } from '../../../environments/environment';
+import { ProductCart } from '../../models/product-cart.model';
+import { CartItem } from '../../models/cart-item.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private apiUrlSalesOrderDetail = `${environment.BASE_URL}/api/SalesOrderDetail`;
-  private apiUrlSalesOrderHeader = `${environment.BASE_URL}/api/SalesOrderHeader`;
+  private cartItemsKey = 'cartItems';
 
-  // Manteniamo i BehaviorSubject esistenti
+  // we keep the existing BehaviorSubjects
   private quantitySubject = new BehaviorSubject<number>(1);
   quantity$ = this.quantitySubject.asObservable();
 
   private totalSubject = new BehaviorSubject<number>(0);
   total$ = this.totalSubject.asObservable();
 
-  // Aggiungiamo un nuovo BehaviorSubject per gli items del carrello
-  private cartItemsSubject = new BehaviorSubject<SalesOrderDetail[]>([]);
+  //add a new BehaviorSubject for the cart items
+  private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
-
-  shipToAddressId: string | undefined;
 
   constructor(private http: HttpClient) { }
 
-  // Metodi esistenti
   setQuantity(quantity: number) {
     this.quantitySubject.next(quantity);
   }
@@ -36,11 +31,11 @@ export class CartService {
     return this.quantitySubject.value;
   }
 
-  setCartItems(items: SalesOrderDetail[]) {
+  setCartItems(items: CartItem[]) {
     this.cartItemsSubject.next(items);
   }
 
-  getNumberOfItems(){
+  getNumberOfItems() {
     return this.cartItemsSubject.value.length;
   }
 
@@ -52,68 +47,76 @@ export class CartService {
     return this.totalSubject.value;
   }
 
-  getShippingAddressId() {
-    return this.shipToAddressId;
+  getCartItems(): CartItem[] {
+    const items = localStorage.getItem(this.cartItemsKey);
+    return items ? JSON.parse(items) as CartItem[] : [];
   }
 
-  // Nuovi metodi per le operazioni CRUD
-  getCartItems(): Observable<SalesOrderDetail[]> {
-    const token = localStorage.getItem('auth');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  // update the cart
+  updateCartItems(updatedItem: CartItem) {
+    const items = this.getCartItems();
+    const changedItem = items.find(item => item.productId === updatedItem.productId);
 
-    const orderHeaderByCustomerUrl = `${this.apiUrlSalesOrderHeader}/Customer/30089`; // get details di un customer a caso
-    
-    return this.http.get<SalesOrderHeader>(orderHeaderByCustomerUrl, { headers }).pipe(
-      // switchMap allows us to return a new observable (the second HTTP request)
-      switchMap((orderHeader: SalesOrderHeader) => {
-        this.shipToAddressId = orderHeader.shipToAddressId
+    if (!changedItem) return;
 
-        // Use some property from the orderHeader (e.g., orderHeader.id) in the second request
-        const url = `${this.apiUrlSalesOrderDetail}/${orderHeader.salesOrderId}`;  // Assuming you need the orderHeader's id here
-        return this.http.get<SalesOrderDetail[]>(url, { headers });
-      })
-    );
-  }
-
-  // Aggiorna il carrello locale
-  updateCartItems(items: SalesOrderDetail[], updatedItem: SalesOrderDetail) {
-    const changedItem = items.find(item => item.salesOrderId === updatedItem.salesOrderId && item.salesOrderDetailId === updatedItem.salesOrderDetailId);
-    
-    if(!changedItem) return;
- 
     changedItem.orderQty = updatedItem.orderQty;
     changedItem.lineTotal = changedItem.unitPrice * updatedItem.orderQty * (1 - changedItem.unitPriceDiscount);
 
+    updatedItem.lineTotal = changedItem.lineTotal;
+
     this.cartItemsSubject.next(items);
-    // Aggiorna anche il totale
+    // update the total
     const newTotal = items.reduce((sum, item) =>
       sum + (item.unitPrice * item.orderQty * (1 - item.unitPriceDiscount)), 0
     );
     this.setTotal(newTotal);
+
+    localStorage.setItem(this.cartItemsKey, JSON.stringify(items));
   }
 
-  // Rimuovi un item dal carrello utilizzando salesOrderId e salesOrderDetailId
-  removeFromCart(salesOrderId: number, salesOrderDetailId: number): Observable<any> {
-    const token = localStorage.getItem('auth');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const url = `${this.apiUrlSalesOrderDetail}/${salesOrderId}/${salesOrderDetailId}`;
-    return this.http.delete(url, { headers });
+  removeFromCart(productId: number | undefined) {
+    if(!productId){
+      return;
+    }
+
+    const cartItems = this.getCartItems();
+
+    const indexToDelete = cartItems.findIndex(item => item.productId === productId);
+    cartItems.splice(indexToDelete, 1);
+    localStorage.setItem(this.cartItemsKey, JSON.stringify(cartItems));
   }
 
-  // Aggiorna la quantità di un item
-  updateItemQuantity(salesOrderId: number, salesOrderDetailId: number, quantity: number): Observable<SalesOrderDetail> {
-    const token = localStorage.getItem('auth');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    const updatedItem = {
-      orderQty: quantity,
-    };
-
-    return this.http.put<SalesOrderDetail>(`${this.apiUrlSalesOrderDetail}/${salesOrderId}/${salesOrderDetailId}`, updatedItem, { headers });
-  }
-
-  // Ottieni gli items correnti del carrello
-  getCurrentCartItems(): SalesOrderDetail[] {
+  // Get the current cart items
+  getCurrentCartItems(): CartItem[] {
     return this.cartItemsSubject.value;
+  }
+
+  addProductToCart(productDetails: ProductCart) {
+    const cartItems = this.getCartItems();
+    const existingItem = cartItems.find(item => item.productId === productDetails.productId);
+
+    if (existingItem) {
+      // if the product exists in the cart, update the quantity
+      existingItem.orderQty += 1;
+      existingItem.lineTotal = existingItem.unitPrice * existingItem.orderQty * (1 - existingItem.unitPriceDiscount);
+    } else {
+      cartItems.push(this.createProduct(productDetails))
+    }
+
+    localStorage.setItem(this.cartItemsKey, JSON.stringify(cartItems));
+  }
+
+  createProduct(productDetails: ProductCart) : CartItem{
+    return {
+      productId: productDetails.productId,
+      orderQty: 1,
+      unitPrice: productDetails.price,
+      unitPriceDiscount: 0,
+      lineTotal: productDetails.price,
+    };
+  }
+
+  clearCart() {
+    localStorage.removeItem('cartItems'); // Remove cart items from local storage
   }
 }
