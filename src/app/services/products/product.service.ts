@@ -86,7 +86,7 @@ export class ProductService {
   }
   
   getProductById(productId: number) {
-    return this.http.get<Product>(`https://zophirel.it/api/product/${productId}`);
+    return this.http.get<Product>(`https://zophirel.it/api/product/view/${productId}`);
   }
   getProductDescription(descriptionId: number) {
     return this.http.get<ProductDescription>(`https://zophirel.it/api/ProductDescription/${descriptionId}`);

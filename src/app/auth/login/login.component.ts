@@ -74,12 +74,10 @@ export class LoginComponent {
             this.loading.set(false);
             
             this.messageStatus = MessageStatus.Success;
+            await this.router.navigateByUrl('/home');
             this.openSnackBar("Successfully logged in!", 'Close');
             
-            setTimeout( async () => { 
-              await this.router.navigateByUrl('/home');
-            }, 3300);
-            
+       
           }
         })
       }

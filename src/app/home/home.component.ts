@@ -24,13 +24,10 @@ export class HomeComponent implements OnDestroy {
   productDescription: ProductDescription | null = null;
   getAllProductsSubscription: Subscription | null = null;
 
-  constructor(private productService: ProductService, private cacheService: CacheService, private cdRef: ChangeDetectorRef) {
-    console.log(localStorage.getItem('auth'));
+  constructor(private productService: ProductService, private cacheService: CacheService, private cdRef: ChangeDetectorRef) { 
     
     if(this.cacheService.has('homeProducts')) {
-      console.log('Caricamento dei prodotti dalla cache');
       this.homeProducts = this.cacheService.get('homeProducts')!;
-
       return;
     }
 
