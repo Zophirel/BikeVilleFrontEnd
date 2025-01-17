@@ -58,8 +58,10 @@ export class ProductComponent implements OnInit {
     private router: Router, //Router per cambiare programmaticamente la rotta.
   ) {} 
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+   // Recupera l'ID del prodotto dalla route corrente.
+   //  Chiama il metodo fetchProductAndGroupAttributes per caricare il prodotto e i relativi attributi.
+  ngOnInit(): void {                           
+    this.route.paramMap.subscribe((params) => {   
       console.log('Parametri:', params);
       const productId = +params.get('id')!;
       if (!isNaN(productId)) {
@@ -89,6 +91,8 @@ export class ProductComponent implements OnInit {
     }
   }
   
+  //Recupera il prodotto corrispondente all'ID fornito tramite il servizio ProductService 
+  //Chiama loadCategoryProducts per caricare i prodotti appartenenti alla stessa categoria.
   fetchProductAndGroupAttributes(productId: number): void {
     console.log('Caricamento del prodotto con ID:', productId);
 
